@@ -12,6 +12,14 @@ Spear is an fast and efficient full text search engine.
 
 # Example Usage
 
+#### Index Text
+
+```
+$ spear add "Let's go to New York city" 78
+```
+
+#### Lookup Text
+
 ```
 $ spear get "New York"
 ['78', '533', '7245']
