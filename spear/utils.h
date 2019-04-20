@@ -8,4 +8,7 @@ typedef struct t_split {
 
 t_split split(char *text);
 
+int max(int i1, int i2);
+int min(int i1, int i2);
+
 #endif

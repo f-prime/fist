@@ -48,4 +48,10 @@ t_split split(char *text) {
     return out;
 }
 
+int max(int i1, int i2) {
+    return i1 > i2 ? i1 : i2;
+}
 
+int min(int i1, int i2) {
+    return i1 > i2 ? i2 : i1;
+}
