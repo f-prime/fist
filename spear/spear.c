@@ -3,16 +3,31 @@
 #include "indexer.h"
 #include "hashmap.h"
 
-void process_text(char *text) {
-    //indexer(text, 10);
+void process_text(char *text, char *val) {
+    t_index index = indexer(text, 10);   
+    
     t_hval *map = h_create();
-    map = h_add(map, "Test", "dsjsfjsdfTer");
-    map = h_add(map, "Test", "AAA");
-    t_hval item = h_get(map, "Test");
-
-    printf("%d %s %s\n", item.length, item.key, item.values[1]);
-    //t_hval entry = h_get(n_map, "Test");
-    //printf("%s %s\n", entry.key, entry.values[0]);
+    
+    for(int x = 0; x < index.length; x++) {
+        map = h_add(map, index.index[x], val); 
+    }
+    map = h_add(map, "is", "2");
+    map = h_add(map, "is", "3");
+    t_hval item = h_get(map, "is");
+    
+    if(item.length == 1) {
+        printf("[%s]", item.values[0]);
+    } else {
+        for(int x = 0; x < item.length; x++) {
+            if(x == 0) {
+                printf("[%s, ", item.values[x]);
+            } else if(x == item.length - 1){
+                printf("%s]", item.values[x]);
+            } else {
+                printf("%s, ", item.values[x]);
+            }
+        }
+    }
 }
 
 int main(int argc, char *argv[]) {
@@ -20,6 +35,6 @@ int main(int argc, char *argv[]) {
         printf("You need to pass a string as the second argument");
         exit(1);
     }
-    process_text(argv[1]);
+    process_text(argv[1], "1");
     return 0;
 }

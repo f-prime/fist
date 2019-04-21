@@ -31,14 +31,13 @@ t_hval *h_add(t_hval *map, char *key, char *val) {
      * Need to expand array if hash all other indexes are taken.
      * Need to append to array if key already exists.
      */
-
+    
     int h_val = hash(key);
     t_hval entry = map[h_val];
-    while(entry.key != NULL && entry.key != key && h_val < HMAP_SIZE) {
+    while(entry.key != NULL && strcmp(entry.key, key) && h_val < HMAP_SIZE) {
         h_val++;
         entry = map[h_val];
     }
-    printf("%d\n", h_val);
 
     // h_val is entry point
     
@@ -48,12 +47,10 @@ t_hval *h_add(t_hval *map, char *key, char *val) {
         for(int i = 0; i < HMAP_SIZE; i++) {
             new_map[i] = map[i];
         }
-        printf("%d\n", h_val);
         map = new_map;
     }
 
-    if(entry.key != NULL && entry.key == key) {
-        printf("WHOA %s\n", entry.key);
+    if(entry.key != NULL && !strcmp(entry.key, key)) {
         int length = entry.length + 1;
         char **new_vals = malloc(length * sizeof(char*));
         int i;
@@ -81,11 +78,13 @@ t_hval *h_create() {
 
 t_hval h_get(t_hval *map, char *key) {
     int on = hash(key);
+    
     t_hval mval = map[on];
-    if(mval.key == NULL || mval.key == key) {
+    
+    if(mval.key == NULL || !strcmp(mval.key, key)) {
         return mval;
     } else {
-        while(mval.key != key && on < HMAP_SIZE) {
+        while(strcmp(mval.key, key) && on < HMAP_SIZE) {
             on++;
             mval = map[on];
         }
