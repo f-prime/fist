@@ -6,9 +6,13 @@
 void process_text(char *text) {
     //indexer(text, 10);
     t_hval *map = h_create();
-    t_hval *n_map = h_add(map, "Test", "dsjsfjsdfTer");
-    t_hval entry = h_get(n_map, "Test");
-    printf("%s %s\n", entry.key, entry.values[0]);
+    map = h_add(map, "Test", "dsjsfjsdfTer");
+    map = h_add(map, "Test", "AAA");
+    t_hval item = h_get(map, "Test");
+
+    printf("%d %s %s\n", item.length, item.key, item.values[1]);
+    //t_hval entry = h_get(n_map, "Test");
+    //printf("%s %s\n", entry.key, entry.values[0]);
 }
 
 int main(int argc, char *argv[]) {
