@@ -11,9 +11,7 @@ void process_text(char *text, char *val) {
     for(int x = 0; x < index.length; x++) {
         map = h_add(map, index.index[x], val); 
     }
-    map = h_add(map, "is", "2");
-    map = h_add(map, "is", "3");
-    t_hval item = h_get(map, "is");
+    t_hval item = h_get(map, "test");
     
     if(item.length == 1) {
         printf("[%s]", item.values[0]);
