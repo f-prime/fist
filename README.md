@@ -7,7 +7,7 @@ Spear also reliabily persists data to the disk as it receives it making it usefu
 Some use cases include:
 
 - Caching
-- Web page indexing
+- Search engine backend
 - Light weight user database
 - Session key management
 
