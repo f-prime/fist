@@ -4,7 +4,7 @@ Spear is a simple lightweight in memory key value store. It supports key-value l
 
 Spear also reliabily persists data to the disk as it receives it making it useful for more traditional database applications, though this is not the main focus. 
 
-Some usecase include:
+Some use cases include:
 
 - Caching
 - Web page indexing
