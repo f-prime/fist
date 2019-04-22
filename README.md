@@ -28,22 +28,28 @@ make build
 spear> set project "Spear Project"
 spear> get project
 "Spear Project"
+spear> del project
 ```
 
 ### Lists
 
 ```
-spear> ladd features "Full text search","hashmap","lists"
+spear> ladd features "entry1"
+spear> ladd features "entry2"
 spear> lget features
-["Full text search", "hashmap", "lists"]
+["entry1", "entry2"]
+spear> ldel features "entry1"
+spear> lget features
+["entry2"]
 ```
 
 ### Full-Text Search
 
 ```
 spear> index "25" "Some text to index"
-spear> search "Some text"
-"25"
+spear> index "26" "Some other text to index"
+spear> search "to index"
+["25", "26"]
 ```
 
 # Key Features
@@ -52,3 +58,4 @@ spear> search "Some text"
 - Full text indexing and searching
 - Lists
 - Persisting data to disk
+- Accessable over TCP connection 
