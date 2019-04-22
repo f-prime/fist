@@ -1,12 +1,8 @@
 # Spear
 
-Spear is a fast, lightweight, full-text search engine. Spear uses in-memory data structures to make index lookups blazing fast, and also persists information to the disk.
+Spear is a fast, lightweight, full-text indexer. Spear stores all information in memory making lookups very fast while also pesisting the index to disk. 
 
 **Spear is still under development. Not all features are implemented or stable yet.**
-
-# Why use Spear?
-
-Spear is useful when full-text search is needed in a limited resources environment. 
 
 # Build
 
