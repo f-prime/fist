@@ -15,6 +15,8 @@ make build
 ./bin/spear
 ```
 
+# Example Usage
+
 Commands: `index`, `search`, `delete`
 
 ```
