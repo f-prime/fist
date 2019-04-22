@@ -1,6 +1,6 @@
 # Spear
 
-Spear is a fast, lightweight, full-text indexer. Spear stores all information in memory making lookups very fast while also pesisting the index to disk. 
+Spear is a fast, lightweight, full-text indexer. Spear stores all information in memory making lookups very fast while also pesisting the index to disk. The index can be accessed over a TCP connection and all data returned is valid JSON.
 
 **Spear is still under development. Not all features are implemented or stable yet.**
 
