@@ -5,6 +5,7 @@
 ### C ###
 # Prerequisites
 *.d
+bin/
 
 # Object files
 *.o
