@@ -1,6 +1,6 @@
 # Spear
 
-Spear is a simple lightweight in memory key value store. It supports key-value lookup, lists, and full-text search. Spear is meant to be a simple but powerful tool that does a few things very well.
+Spear is a simple lightweight in memory key value store. It supports key-value lookup, lists, and full-text search. Spear is meant to be a simple but powerful tool that does these three things very well.
 
 Spear also reliabily persists data to the disk as it receives it making it useful for more traditional database applications, though this is not the main focus. 
 
@@ -64,4 +64,5 @@ spear> search "to index"
 - Full text indexing and searching
 - Lists
 - Persisting data to disk
-- Accessable over TCP connection 
+- Accessable over TCP connection
+- Authentication
