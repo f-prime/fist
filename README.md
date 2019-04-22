@@ -11,7 +11,7 @@ Some use cases include:
 - Light weight user database
 - Session key management
 
-**Spear is still under development. Not all features are yet implemented or stable yet.**
+**Spear is still under development. Not all features are implemented or stable yet.**
 
 # Build
 
