@@ -30,7 +30,7 @@ t_split split(char *text) {
         char on = text[x];
         if(on == ' ') {
             word_array[word_on] = malloc(strlen(tmp_word) * sizeof(char));
-            strcpy(word_array[word_on], tmp_word);
+            memcpy(word_array[word_on], tmp_word, strlen(tmp_word) + 1);
             word_on++;
             memset(tmp_word, '\0', strlen(tmp_word));
             tmp_char_on = 0;
@@ -41,8 +41,7 @@ t_split split(char *text) {
     }    
     
     word_array[word_on] = malloc(strlen(tmp_word) * sizeof(char));
-    strcpy(word_array[word_on], tmp_word);
-
+    memcpy(word_array[word_on], tmp_word, strlen(tmp_word) + 1)
     t_split out = {word_array, words};
 
     return out;

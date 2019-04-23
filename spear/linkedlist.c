@@ -23,10 +23,10 @@ l_item ll_create() {
 l_item ll_add(l_item list, char *key, char *value) {
     l_item new = ll_create();
     new->key = malloc(sizeof(char) * strlen(key));
-    strcpy(new->key, key);
+    memcpy(new->key, key, strlen(key) + 1);
     new->values = malloc(sizeof(char*));
     new->values[0] = malloc(sizeof(char) * strlen(value));
-    strcpy(new->values[0], value);
+    memcpy(new->values[0], value, strlen(value) + 1);
     new->num_vals = 1;
 
     if(list->key == NULL) {
@@ -44,7 +44,7 @@ l_item ll_add(l_item list, char *key, char *value) {
             
             char **new_vals = realloc(on->values, sizeof(char*) * (on->num_vals + 1));
             new_vals[on->num_vals] = malloc(sizeof(char) * sizeof(value));
-            strcpy(new_vals[on->num_vals], value);
+            memcpy(new_vals[on->num_vals], value, strlen(value) + 1);
             on->values = new_vals;
             on->num_vals++;     
         

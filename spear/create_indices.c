@@ -31,8 +31,7 @@ t_index create_indices(char *text, int max_phrase_length) {
             }
             
             index_list[length] = malloc(strlen(index) * sizeof(char));
-            strcpy(index_list[length], index);
-
+            memcpy(index_list[length], index, strlen(index) + 1);
             length++;
             free(index);
         }
