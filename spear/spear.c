@@ -11,7 +11,9 @@ void process_text(char *text, char *val) {
     hm = h_add(hm, "K2", "VAL3");
 
     for(int i = 0; i < 10000; i++) {
-        hm = h_add(hm, "KEY3", "VALUE");
+        char buffer[1000];
+        sprintf(buffer, "Key%d", i);
+        hm = h_add(hm, buffer, "VALUE");
     }
 
     l_item k = h_get(hm, "KEY3");
