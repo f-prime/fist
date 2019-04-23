@@ -42,16 +42,12 @@ l_item ll_add(l_item list, char *key, char *value) {
             free(new->values[0]);
             free(new);
             
-            char **new_vals = malloc(sizeof(char*) * (on->num_vals + 1));
-            
-            for(int i = 0; i < on->num_vals; i++) {
-                new_vals[i] = malloc(sizeof(char) * strlen(on->values[i]));
-                strcpy(new_vals[i], on->values[i]);
-            }
+            char **new_vals = realloc(on->values, sizeof(char*) * (on->num_vals + 1));
             new_vals[on->num_vals] = malloc(sizeof(char) * sizeof(value));
             strcpy(new_vals[on->num_vals], value);
             on->values = new_vals;
             on->num_vals++;     
+        
         } else {
             on->next = new;
         }

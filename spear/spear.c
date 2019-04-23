@@ -12,8 +12,9 @@ void process_text(char *text, char *val) {
     ll = ll_add(ll, "TEST", "AY");
     ll = ll_add(ll, "TEST", "GOOD");
     
-    l_item v1 = ll_key("Yel");
-    l_item values = ll_get(ll, 3);
+    //l_item v1 = ll_key(ll, "Yel");
+    l_item values = ll_get(ll, 2);
+    //printf("%d\n", values->num_vals);
     for(int i = 0; i < values->num_vals; i++) {
         printf("WOW: %s\n", values->values[i]);
     }
