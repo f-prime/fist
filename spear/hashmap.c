@@ -19,10 +19,9 @@ typedef struct t_hval {
 
 int hash(char *val) {
     int sum = 0;
-    for(int i = 0; i < strlen(val); i++) {
-        sum += (int) val[i];
+    for(int x = 0; x < strlen(val); x++) {
+        sum += (int) val[x];
     }
-
     return sum % HMAP_SIZE;
 }
 

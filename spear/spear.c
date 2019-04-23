@@ -1,9 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "indexer.h"
+#include "create_indices.h"
 #include "hashmap.h"
+#include "linkedlist.h"
 
 void process_text(char *text, char *val) {
+    l_item ll = ll_create();
+    ll = ll_add(ll, "Ley", "Test");
+    ll = ll_add(ll, "Yel", "A");
+    ll = ll_add(ll, "TEST", "BOI");
+    printf("%d\n", ll_length(ll));
+    printf("%s\n", ll_get(ll, 2)->key);
+    printf("%s\n", ll_key(ll, "Ley")->values[0]);
+
+
+    
+    /*
     t_index index = indexer(text, 10);   
     
     t_hval *map = h_create();
@@ -26,6 +38,7 @@ void process_text(char *text, char *val) {
             }
         }
     }
+    */
 }
 
 int main(int argc, char *argv[]) {
