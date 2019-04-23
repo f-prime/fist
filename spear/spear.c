@@ -4,19 +4,19 @@
 #include "hashmap.h"
 #include "linkedlist.h"
 
-void process_text(char *text, char *val) {
+void test() {
     l_item *hm = h_create();
     hm = h_add(hm, "KEY", "VAL");
     hm = h_add(hm, "KEY", "VAL2");
     hm = h_add(hm, "K2", "VAL3");
 
-    for(int i = 0; i < 10000; i++) {
+    for(int i = 0; i < 100000; i++) {
         char buffer[1000];
-        sprintf(buffer, "Key%d", i);
+        sprintf(buffer, "KEY%d", i);
         hm = h_add(hm, buffer, "VALUE");
     }
-
-    l_item k = h_get(hm, "KEY3");
+    printf("STARTED GET\n");
+    l_item k = h_get(hm, "KEY10000");
     printf("%s %s\n", k->key, k->values[0]);
 }
 
@@ -25,6 +25,6 @@ int main(int argc, char *argv[]) {
         printf("You need to pass a string as the second argument");
         exit(1);
     }
-    process_text(argv[1], "1");
+    test();
     return 0;
 }
