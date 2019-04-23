@@ -8,7 +8,7 @@ typedef struct t_index {
     int length;
 } t_index;
 
-t_index create_indices(char *text, int max_phrase_length) {
+t_index indexer(char *text, int max_phrase_length) {
     t_split words = split(text);
     char **index_list = malloc(words.length * words.length * sizeof(char*));
     int length = 0;

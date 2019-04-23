@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "create_indices.h"
 #include "hashmap.h"
 #include "linkedlist.h"
+#include "indexer.h"
 
 void test() {
     l_item *hm = h_create();
@@ -25,6 +25,14 @@ int main(int argc, char *argv[]) {
         printf("You need to pass a string as the second argument");
         exit(1);
     }
-    test();
+    //test();
+    l_item *hm = h_create();
+    t_index index = indexer(argv[1], 10);
+    for(int i = 0; i < index.length; i++) {
+        hm = h_add(hm, index.index[i], "25");
+    }
+
+    l_item item = h_get(hm, "a test");
+    printf("%s -> %s\n", item->key, item->values[0]);
     return 0;
 }
