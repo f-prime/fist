@@ -9,10 +9,14 @@ void process_text(char *text, char *val) {
     ll = ll_add(ll, "Ley", "Test");
     ll = ll_add(ll, "Yel", "A");
     ll = ll_add(ll, "TEST", "BOI");
-    printf("%d\n", ll_length(ll));
-    printf("%s\n", ll_get(ll, 2)->key);
-    printf("%s\n", ll_key(ll, "Ley")->values[0]);
-
+    ll = ll_add(ll, "TEST", "AY");
+    ll = ll_add(ll, "TEST", "GOOD");
+    
+    l_item v1 = ll_key("Yel");
+    l_item values = ll_get(ll, 3);
+    for(int i = 0; i < values->num_vals; i++) {
+        printf("WOW: %s\n", values->values[i]);
+    }
 
     
     /*
