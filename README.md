@@ -1,6 +1,6 @@
 # Spear
 
-Spear is a fast, lightweight, full-text indexer. Spear stores all information in memory making lookups very fast while also pesisting the index to disk. The index can be accessed over a TCP connection and all data returned is valid JSON.
+Spear is a fast, lightweight, full-text index server. Spear stores all information in memory making lookups very fast while also pesisting the index to disk. The index can be accessed over a TCP connection and all data returned is valid JSON.
 
 **Spear is still heavily under development. Not all features are implemented or stable yet.**
 
@@ -33,7 +33,7 @@ spear> index "25" "Some text to index"
 spear> index "26" "Some other text to index"
 spear> search "to index"
 ["25", "26"]
-spear> remove "to index"
+spear> delete "to index"
 spear> search "to index"
 []
 ```
