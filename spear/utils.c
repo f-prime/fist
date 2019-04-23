@@ -41,7 +41,7 @@ t_split split(char *text) {
     }    
     
     word_array[word_on] = malloc(strlen(tmp_word) * sizeof(char));
-    memcpy(word_array[word_on], tmp_word, strlen(tmp_word) + 1)
+    memcpy(word_array[word_on], tmp_word, strlen(tmp_word) + 1);
     t_split out = {word_array, words};
 
     return out;

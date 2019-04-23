@@ -1,23 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "linkedlist.h"
 
-int HMAP_SIZE = 1000;
+unsigned long HMAP_SIZE = 1000000;
 
-/*
-    {
-        "New York":["1", "2", "5"]
-    }   
-
-*/
-
-typedef struct t_hval {
-    char *key;
-    char **values;
-    int length;
-} t_hval;
-
-int hash(char *val) {
+unsigned long hash(char *val) {
     int sum = 0;
     for(int x = 0; x < strlen(val); x++) {
         sum += (int) val[x];
@@ -25,68 +13,35 @@ int hash(char *val) {
     return sum % HMAP_SIZE;
 }
 
-t_hval *h_add(t_hval *map, char *key, char *val) {
-    /*
-     * Need to expand array if hash all other indexes are taken.
-     * Need to append to array if key already exists.
-     */
-    
-    int h_val = hash(key);
-    t_hval entry = map[h_val];
-    while(entry.key != NULL && strcmp(entry.key, key) && h_val < HMAP_SIZE) {
-        h_val++;
-        entry = map[h_val];
+l_item * h_create() {
+    l_item *hm = malloc(sizeof(l_item) * HMAP_SIZE);
+    for(int i = 0; i < HMAP_SIZE; i++) {
+        hm[i] = NULL;
     }
-
-    // h_val is entry point
-    
-    if(h_val > HMAP_SIZE) { // If all other slots beyond h_val are taken we need to expand the array
-        HMAP_SIZE *= 2;
-        t_hval *new_map = malloc((HMAP_SIZE + h_val) * sizeof(t_hval));
-        for(int i = 0; i < HMAP_SIZE; i++) {
-            new_map[i] = map[i];
-        }
-        map = new_map;
-    }
-
-    if(entry.key != NULL && !strcmp(entry.key, key)) {
-        int length = entry.length + 1;
-        char **new_vals = malloc(length * sizeof(char*));
-        int i;
-        for(i = 0; i < entry.length; i++) {
-            new_vals[i] = entry.values[i];
-        }
-        new_vals[i] = val;
-        map[h_val].values = new_vals;
-        map[h_val].length = length;
-    } else {    
-        char **values = malloc(sizeof(char*));
-        values[0] = val;
-        t_hval new_entry = {key, values, 1};
-        map[h_val] = new_entry;    
-    }
-
-    return map;
+    return hm;
 }
 
-t_hval *h_create() {
-    // Need to create a 2D array of t_hvals
-    t_hval *map = malloc(HMAP_SIZE * sizeof(t_hval));
-    return map;
-}
 
-t_hval h_get(t_hval *map, char *key) {
-    int on = hash(key);
-    
-    t_hval mval = map[on];
-    
-    if(mval.key == NULL || !strcmp(mval.key, key)) {
-        return mval;
+l_item *h_add(l_item *ll, char *key, char *value) {
+    unsigned long hval = hash(key);
+    l_item entry = ll[hval];
+    if(entry == NULL) {
+        ll[hval] = malloc(sizeof(l_item));
+        l_item item = ll_create();
+        item = ll_add(item, key, value);
+        ll[hval] = item;
     } else {
-        while(strcmp(mval.key, key) && on < HMAP_SIZE) {
-            on++;
-            mval = map[on];
-        }
-        return mval;
+        ll_add(entry, key, value);
     }
+    return ll;
+}
+
+l_item h_get(l_item *ll, char *key) {
+    unsigned long hval = hash(key);
+    l_item entry = ll[hval];
+    if(entry == NULL)
+        return NULL;
+    
+    l_item real_entry = ll_key(entry, key);
+    return real_entry;
 }

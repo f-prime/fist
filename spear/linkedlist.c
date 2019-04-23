@@ -66,6 +66,9 @@ unsigned int ll_length(l_item list) {
 }
 
 l_item ll_get(l_item list, unsigned int index) {
+    if(index == 0)
+        return list;
+
     for(int i = 1; i <= index; i++)
         list = list->next;
         if(list == NULL)
@@ -74,7 +77,11 @@ l_item ll_get(l_item list, unsigned int index) {
 }
 
 l_item ll_key(l_item list, char *key) {
-    while(list->next != NULL) {
+    if (!strcmp(list->key, key)) {
+        return list;
+    }
+
+    while(list != NULL) {
         if(!strcmp(list->key, key)) {
             return list;
         } else {
