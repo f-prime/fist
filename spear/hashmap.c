@@ -3,7 +3,7 @@
 #include <string.h>
 #include "linkedlist.h"
 
-unsigned long HMAP_SIZE = 1000000;
+unsigned long HMAP_SIZE = 1000081;
 
 unsigned long hash(char *val) {
     int sum = 0;
