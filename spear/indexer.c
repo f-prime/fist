@@ -2,11 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "utils.h"
-
-typedef struct t_index {
-    char **index;
-    int length;
-} t_index;
+#include "indexer.h"
 
 t_index indexer(char *text, int max_phrase_length) {
     t_split words = split(text);
