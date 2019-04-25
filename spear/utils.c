@@ -1,11 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-typedef struct t_split {
-    char **word_array;
-    int length;
-} t_split;
+#include "utils.h"
 
 t_split split(char *text) {
     int words = 0;

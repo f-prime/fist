@@ -1,15 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-struct LinkedList {
-    char *key;
-    char **values;
-    int num_vals;
-    struct LinkedList *next;
-};
-
-typedef struct LinkedList *l_item;
+#include "linkedlist.h"
 
 l_item ll_create() {
     l_item item = malloc(sizeof(struct LinkedList));
@@ -33,8 +25,8 @@ l_item ll_add(l_item list, char *key, char *value) {
         list = new;
     } else {
         l_item on = list;
-        while(on->next != NULL && strcmp(on->key, key)) {
-            on = on->next; 
+        while((l_item) on->next != NULL && strcmp(on->key, key)) {
+            on = (l_item) on->next; 
         }
         if(!strcmp(on->key, key)) { 
             free(new->key);
@@ -49,7 +41,7 @@ l_item ll_add(l_item list, char *key, char *value) {
             on->num_vals++;     
         
         } else {
-            on->next = new;
+            on->next = (l_item) new;
         }
     }
     return list;
@@ -59,7 +51,7 @@ unsigned int ll_length(l_item list) {
     unsigned int length = 0;
     while(list != NULL) {
         length++;
-        list = list->next;
+        list = (l_item) list->next;
     }
 
     return length;
@@ -70,7 +62,7 @@ l_item ll_get(l_item list, unsigned int index) {
         return list;
 
     for(int i = 1; i <= index; i++)
-        list = list->next;
+        list = (l_item) list->next;
         if(list == NULL)
             return NULL;
     return list;
@@ -85,7 +77,7 @@ l_item ll_key(l_item list, char *key) {
         if(!strcmp(list->key, key)) {
             return list;
         } else {
-            list = list->next;
+            list = (l_item) list->next;
         }
     }
     return NULL;
