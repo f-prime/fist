@@ -17,7 +17,7 @@
 // Responses
 
 #define INDEXED "INDEXED"
-#define NOT_FOUND "KEY NOT FOUND"
+#define NOT_FOUND "[]"
 
 l_item *handle_connection(int new_socket, l_item *hm) {
     printf("Handled\n");
@@ -69,7 +69,6 @@ l_item *handle_connection(int new_socket, l_item *hm) {
                 }
                 printf("SEARCH '%s'\n", search); 
                 l_item key = h_get(hm, search);
-                printf("%s\n", key);
                 if(key == NULL)
                     send(new_socket, NOT_FOUND, strlen(NOT_FOUND), 0);
                 else {
@@ -127,7 +126,7 @@ void start_server(char *host, int port) {
         exit(EXIT_FAILURE);
     }
 
-    printf("Spear started on port %d\n", port); 
+    printf("Spear started at localhost:%d\n", port); 
 
     l_item *hm = h_create();
 
