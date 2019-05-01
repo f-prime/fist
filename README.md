@@ -6,7 +6,7 @@ Spear is a fast, lightweight, full-text index server. Spear stores all informati
 
 # Motivation
 
-The motivation for this project came while I was trying to build a search engine for audio files. The goal was to be able to search the files by the words spoken in the audio. Naturally, this meant that I needed to index a lot of data, and I needed to be able to do it very quickly. I also needed a light weight solution that was easy to setup in 
+The motivation for this project came while I was trying to build a search engine for audio files. The goal was to be able to search the files by the words spoken in the audio. Naturally, this meant that I needed to index a lot of data, and I needed to be able to look it up very quickly. I also needed a light weight solution that was easy to setup in 
 any kind of environment without the need for heavy configuration. Just compile and deploy. 
 
 This is where Spear comes in. Spear is intended to be used in situations like this where a full-text index is needed and where speed and efficieny are important. It is designed to be light weight and easy to get up and running in minutes. Spear works as intended out of the box without the need for futher configuration. 
