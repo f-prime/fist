@@ -28,7 +28,12 @@ l_item ll_add(l_item list, char *key, char *value) {
         while((l_item) on->next != NULL && strcmp(on->key, key)) {
             on = (l_item) on->next; 
         }
-        if(!strcmp(on->key, key)) { 
+        if(!strcmp(on->key, key)) {  
+            for(int i = 0; i < on->num_vals; i++) {
+                if(!strcmp(on->values[i], value)) {
+                    return list;
+                }
+            }
             free(new->key);
             free(new->values);
             free(new->values[0]);

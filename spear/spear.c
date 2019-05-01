@@ -3,8 +3,10 @@
 #include "hashmap.h"
 #include "linkedlist.h"
 #include "indexer.h"
+#include "server.h"
 
 void test() {
+    /*
     l_item *hm = h_create();
     hm = h_add(hm, "KEY", "VAL");
     hm = h_add(hm, "KEY", "VAL2");
@@ -18,21 +20,11 @@ void test() {
     printf("STARTED GET\n");
     l_item k = h_get(hm, "KEY10000");
     printf("%s %s\n", k->key, k->values[0]);
+    */
 }
 
 int main(int argc, char *argv[]) {
-    if(argc < 2) {
-        printf("You need to pass a string as the second argument");
-        exit(1);
-    }
     //test();
-    l_item *hm = h_create();
-    t_index index = indexer(argv[1], 10);
-    for(int i = 0; i < index.length; i++) {
-        hm = h_add(hm, index.index[i], "25");
-    }
-
-    l_item item = h_get(hm, "a test");
-    printf("%s -> %s\n", item->key, item->values[0]);
+    start_server("127.0.0.1", 5575);
     return 0;
 }

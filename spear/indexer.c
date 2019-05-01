@@ -6,7 +6,20 @@
 
 t_index indexer(char *text, int max_phrase_length) {
     t_split words = split(text);
+    for(int i = 0; i < words.length; i++) {
+        printf("WORD: %s\n", words.word_array[i]); 
+    }
+    
+    if(words.length == 1) {
+        char **index_list = malloc(sizeof(char*));
+        index_list[0] = malloc(sizeof(char) * strlen(text));
+        index_list[0] = text;
+        t_index index = {index_list, 1};
+        return index;
+    }
+
     char **index_list = malloc(words.length * words.length * sizeof(char*));
+    
     int length = 0;
 
     for(int ahead = 1; ahead < min(words.length, max_phrase_length); ahead++) {
@@ -15,7 +28,7 @@ t_index indexer(char *text, int max_phrase_length) {
                 break;
             
             char *index = malloc(strlen(text) * sizeof(char));
-            memset(index, '\0', strlen(text)); 
+            memset(index, 0, strlen(text)); 
             
             for(int j = i; j < i + ahead; j++) {
                 char *word_on = words.word_array[j];
@@ -27,6 +40,7 @@ t_index indexer(char *text, int max_phrase_length) {
             }
             
             index_list[length] = malloc(strlen(index) * sizeof(char));
+            memset(index_list[length], 0, strlen(index));
             memcpy(index_list[length], index, strlen(index) + 1);
             length++;
             free(index);
