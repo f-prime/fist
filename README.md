@@ -28,7 +28,7 @@ Commands: `INDEX`, `SEARCH`, `DELETE`
 spear> INDEX document_1 Some text that I want to index
 INDEXED
 spear> INDEX document_2 Some other text that I want to index
-spear> SEARC I want to index
+spear> SEARCH I want to index
 ["document_1", "document_2"]
 spear> DELETE to index
 spear> SEARCH to index
