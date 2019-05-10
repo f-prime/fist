@@ -12,6 +12,8 @@ dstring dsplit(dstring input, char at); // Splits string at character
 dstring dtrim(dstring input); // Trims whitespace and new line characters from beginning and end of dstring
 dstring dreverse(dstring input); // Reverses a dstring
 dstring dcreate(char *initial); // Creates and returns a new dstring
+dstring dempty(); // Creates an empty dstring
+dstring dsplice(dstring input, int start, int end); // Splices a string between to indices
 dstring dfree(dstring string); // Frees a dstring's memory
 
 #endif

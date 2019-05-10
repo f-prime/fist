@@ -4,6 +4,7 @@
 #include "linkedlist.h"
 #include "indexer.h"
 #include "server.h"
+#include "tests.h"
 
 void test() {
     /*
@@ -24,7 +25,7 @@ void test() {
 }
 
 int main(int argc, char *argv[]) {
-    //test();
-    start_server("127.0.0.1", 5575);
+    run_tests();
+    //start_server("127.0.0.1", 5575);
     return 0;
 }
