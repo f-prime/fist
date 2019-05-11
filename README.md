@@ -18,6 +18,12 @@ make build
 ./bin/spear
 ```
 
+# Run Tests
+
+```
+./bin/spear test
+```
+
 # Example Usage
 
 Commands can be sent over Telnet or using the `spear-cli.py` tool.  

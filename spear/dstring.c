@@ -3,6 +3,16 @@
 #include "dstring.h"
 #include <stdlib.h>
 
+dstring dappendc(dstring input, char character) {
+    int new_size = input.length + 2;
+    char *string = realloc(input.text, sizeof(char) * new_size);
+    string[input.length] = character;
+    string[input.length + 1] = 0;
+    input.length++;
+    input.text = string;
+    return input;
+}
+
 dstring dappend(dstring input, char *characters) {
     int increase_by = strlen(characters) + 1;
     int new_size = strlen(input.text) + increase_by;

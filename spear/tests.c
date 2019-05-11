@@ -50,11 +50,27 @@ static char *test_free_dstring() {
     return 0;
 }
 
+static char *test_dappendc_dstring() {
+    dstring string = dcreate("Hello");
+    string = dappendc(string, '!');
+    mu_assert("dappendc: Char added", !strcmp(string.text, "Hello!"));
+    mu_assert("dappendc: Length correct", string.length == 6);
+    char *other_chars = " How are you?";
+    for(int i = 0; i < strlen(other_chars); i++) {
+        string = dappendc(string, other_chars[i]);
+    }
+    mu_assert("dappendc: Other chars added", !strcmp(string.text, "Hello! How are you?"));
+    printf("%d\n", string.length);
+    mu_assert("dappendc: Length other chars", string.length == 19);
+    return 0;
+}
+
 static char *all_tests() {
     mu_run_test(test_empty_dstring);
     mu_run_test(test_create_dstring);
     mu_run_test(test_append_dstring);
     mu_run_test(test_reverse_dstring);
+    mu_run_test(test_dappendc_dstring);
     mu_run_test(test_free_dstring);
     return 0;
 }
