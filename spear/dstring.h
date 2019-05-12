@@ -17,6 +17,7 @@ int dindexof(dstring input, char character); // Returns the index of a character
 dstring dcreate(char *initial); // Creates and returns a new dstring
 dstring dempty(); // Creates an empty dstring
 dstring dsplice(dstring input, int start, int end); // Splices a string between to indices
+int dcount(dstring input, char character); // Count occurances of a character in the dstring
 int dfree(dstring string); // Frees a dstring's memory
 
 #endif
