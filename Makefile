@@ -1,4 +1,4 @@
 build:
-	cd spear && make
+	cd fist && make
 	mkdir -p bin
-	mv spear/spear bin/spear
+	mv fist/fist bin/fist

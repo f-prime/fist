@@ -1,15 +1,15 @@
-# Spear
+# Fist - (F)ull-text (i)ndex (s)erver (t) 
 
-Spear is a fast, lightweight, full-text search and index server. Spear stores all information in memory making lookups very fast while also pesisting the index to disk. The index can be accessed over a TCP connection and all data returned is valid JSON.
+Fist is a fast, lightweight, full-text search and index server. Fist stores all information in memory making lookups very fast while also persisting the index to disk. The index can be accessed over a TCP connection and all data returned is valid JSON.
 
-**Spear is still heavily under development. Not all features are implemented or stable yet.**
+**Fist is still heavily under development. Not all features are implemented or stable yet.**
 
 # Motivation
 
 Most software that requires full-text search is not really that complicated thus it does not need a complex solution. Using a complex solution often times tends to create headaches. 
 Setting up Elasticsearch when Elasticsearch really isn't needed for the particular application costs more time and money to maintain. 
 
-This is where Spear comes in. Spear is intended to be extremely easy to deploy and integrate into your application. Just start the Spear server and start sending commands.
+This is where Fist comes in. Fist is intended to be extremely easy to deploy and integrate into your application. Just start the Fist server and start sending commands.
 
 # Build
 
