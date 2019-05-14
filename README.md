@@ -15,29 +15,29 @@ This is where Fist comes in. Fist is intended to be extremely easy to deploy and
 
 ```
 make build
-./bin/spear
+./bin/fist
 ```
 
 # Run Tests
 
 ```
-./bin/spear test
+./bin/fist test
 ```
 
 # Example Usage
 
-Commands can be sent over using the `spear-cli.py` CLI tool.  
+Commands can be sent over using the `fist-cli.py` CLI tool.  
 
 Commands: `INDEX`, `SEARCH`, `DELETE`
 
 ```
-spear> INDEX document_1 Some text that I want to index
+fist> INDEX document_1 Some text that I want to index
 INDEXED
-spear> INDEX document_2 Some other text that I want to index
-spear> SEARCH I want to index
+fist> INDEX document_2 Some other text that I want to index
+fist> SEARCH I want to index
 ["document_1", "document_2"]b
-spear> DELETE I want to index
-spear> SEARCH I want to index
+fist> DELETE I want to index
+fist> SEARCH I want to index
 []
 ```
 
