@@ -6,7 +6,7 @@ Fist is a fast, lightweight, full-text search and index server. Fist stores all 
 
 # Motivation
 
-Most software that requires full-text search is not really that complicated thus it does not need a complex solution. Using a complex solution often times tends to create headaches. 
+Most software that requires full-text search is not really that complicated and does not need an overly complex solution. Using a complex solution often times leads to headaches. 
 Setting up Elasticsearch when Elasticsearch really isn't needed for the particular application costs more time and money to maintain. 
 
 This is where Fist comes in. Fist is intended to be extremely easy to deploy and integrate into your application. Just start the Fist server and start sending commands.
