@@ -26,7 +26,7 @@ make build
 
 # Example Usage
 
-Commands can be sent over using the `fist-cli.py` CLI tool.  
+Commands can be sent over using the `fist-cli.py` CLI tool (being developed).  
 
 Commands: `INDEX`, `SEARCH`, `DELETE`
 
@@ -35,7 +35,7 @@ fist> INDEX document_1 Some text that I want to index
 INDEXED
 fist> INDEX document_2 Some other text that I want to index
 fist> SEARCH I want to index
-["document_1", "document_2"]b
+["document_1", "document_2"]
 fist> DELETE I want to index
 fist> SEARCH I want to index
 []
