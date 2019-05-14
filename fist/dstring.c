@@ -53,6 +53,51 @@ dstring dreverse(dstring input) {
     return reversed_dstring;
 }
 
+int dcount(dstring input, char character) {
+    int occurances = 0;
+    for(int i = 0; i < input.length; i++) {
+        if(input.text[i] == character)
+            occurances++;
+    }
+
+    return occurances;
+}
+
+int dindexof(dstring input, char character) {
+    int index = -1;
+    for(int i = 0; i < input.length; i++) {
+        if(input.text[i] == character) {
+            index = i;
+            break;
+        }
+    }
+
+    return index;
+}
+
+dstringa dcreatea() {
+    dstring *empty = malloc(sizeof(dstring));
+    dstringa strings = {0, empty}; 
+    return strings;
+}
+
+dstringa dpush(dstringa array, dstring input) {
+    int new_length = array.length + 1;
+    dstring *new_array = realloc(array.values, sizeof(dstring) * new_length);
+    new_array[array.length] = input;
+    dstringa new_dstringa = {new_length, new_array};
+    return new_dstringa;
+}
+
+int dfreea(dstringa array) {
+    for(int i = 0; i < array.length; i++) {
+        dfree(array.values[i]);
+    }
+    
+    free(array.values);
+    return array.length;
+}
+
 int dfree(dstring string) {
     free(string.text);
     return string.length;

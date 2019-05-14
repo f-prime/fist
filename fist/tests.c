@@ -60,18 +60,63 @@ static char *test_dappendc_dstring() {
         string = dappendc(string, other_chars[i]);
     }
     mu_assert("dappendc: Other chars added", !strcmp(string.text, "Hello! How are you?"));
-    printf("%d\n", string.length);
     mu_assert("dappendc: Length other chars", string.length == 19);
     return 0;
 }
 
+static char *test_count_dstring() {
+    char *test_val = "Hello Harry";
+    int occurances = 2;
+    dstring string = dcreate(test_val);
+    mu_assert("dcount: Count Correct", dcount(string, 'H') == occurances);
+    return 0;
+}
+
+static char *test_indexof_dstring() {
+    char *test_val = "Hello World";
+    int test_index = 6;
+    int test_not_in = -1;
+    dstring string = dcreate(test_val);
+    int index = dindexof(string, 'W');
+    int index2 = dindexof(string, 'z');
+    mu_assert("dindexof: Correct Index", index == test_index);
+    mu_assert("dindexof: Not in string", index2 == test_not_in);
+    return 0;
+}
+
+static char *test_create_array_dstring() {
+    dstringa array = dcreatea();
+    mu_assert("dcreatea: Initialized to zero", array.length == 0);
+    return 0;
+}
+
+static char *test_push_array_dstring() {
+    dstring test_val = dcreate("Test");
+    dstring test_val_2 = dcreate("test2");
+    dstringa array = dcreatea();
+    array = dpush(array, test_val);
+    mu_assert("dpush: Pushing first value length", array.length == 1);
+    mu_assert("dpush: Pushing first value check val", !strcmp(array.values[0].text, test_val.text));
+    array = dpush(array, test_val_2);
+    mu_assert("dpush: Pushing second value length", array.length == 2);
+    mu_assert("dpush: Pushing second value check val", !strcmp(array.values[1].text, test_val_2.text));
+
+    mu_assert("dpush: Check first and second val", !strcmp(array.values[0].text, test_val.text) && !strcmp(array.values[1].text, test_val_2.text));
+
+    return 0;
+}
+
 static char *all_tests() {
+    mu_run_test(test_push_array_dstring);
+    mu_run_test(test_create_array_dstring);
+    mu_run_test(test_indexof_dstring);
     mu_run_test(test_empty_dstring);
     mu_run_test(test_create_dstring);
     mu_run_test(test_append_dstring);
     mu_run_test(test_reverse_dstring);
     mu_run_test(test_dappendc_dstring);
     mu_run_test(test_free_dstring);
+    mu_run_test(test_count_dstring);
     return 0;
 }
 
@@ -80,6 +125,6 @@ void run_tests() {
     if(result != 0) {
         printf("FAILED: %s\n", result);
     } else {
-        printf("All tests %d tests passed\n", tests_run);
+        printf("All %d tests passed\n", tests_run);
     }
 }
