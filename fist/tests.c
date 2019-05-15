@@ -102,7 +102,6 @@ static char *test_push_array_dstring() {
     mu_assert("dpush: Pushing second value check val", !strcmp(array.values[1].text, test_val_2.text));
 
     mu_assert("dpush: Check first and second val", !strcmp(array.values[0].text, test_val.text) && !strcmp(array.values[1].text, test_val_2.text));
-
     return 0;
 }
 
@@ -189,7 +188,21 @@ static char *test_replace_dstring() {
     return 0;
 }
 
+static char *test_dsplit_dstring() {
+    dstring test_val = dcreate("Hello my name is Frankie");
+    dstringa split = dsplit(test_val, ' ');
+    mu_assert("dsplit: Length", split.length == 5);
+    mu_assert("dsplit: 0", !strcmp(split.values[0].text, "Hello"));
+    mu_assert("dsplit: 1", !strcmp(split.values[1].text, "my")); 
+    mu_assert("dsplit: 2", !strcmp(split.values[2].text, "name"));
+    mu_assert("dsplit: 3", !strcmp(split.values[3].text, "is"));
+    mu_assert("dsplit: 4", !strcmp(split.values[4].text, "Frankie"));
+
+    return 0;
+}
+
 static char *all_tests() {
+    mu_run_test(test_dsplit_dstring);
     mu_run_test(test_replace_dstring);
     mu_run_test(test_trim_dstring);
     mu_run_test(test_substr_dstring);

@@ -101,6 +101,26 @@ int dindexofa(dstringa array, dstring input) {
     return index;
 }
 
+dstringa dsplit(dstring input, char at) {
+    dstringa array = dcreatea();
+    dstring string = dempty();
+    for(int i = 0; i < input.length; i++) {
+        char on = input.text[i];
+        if(on == at && string.length > 0) {
+            array = dpush(array, string);
+            string = dempty();
+        } else {
+            string = dappendc(string, on);
+        }
+    }
+
+    if(string.length > 0) {
+        array = dpush(array, string);
+    }
+    dfree(string);
+    return array;
+}
+
 int dfreea(dstringa array) {
     for(int i = 0; i < array.length; i++) {
         dfree(array.values[i]);
