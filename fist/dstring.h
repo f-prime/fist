@@ -13,7 +13,7 @@ typedef struct dstringa {
 
 dstring dappendc(dstring input, char character); // Apppend single char to string
 dstring dappend(dstring input, char *characters); // Appends a string to the end of the dstring
-dstringa *dsplit(dstring input, char at); // Splits string at character
+//dstringa *dsplit(dstring input, char at); // Splits string at character
 dstring dtrim(dstring input); // Trims whitespace and new line characters from beginning and end of dstring
 dstring dreverse(dstring input); // Reverses a dstring
 dstring dreplace(dstring input, char there, char with); // Replaces char with another
