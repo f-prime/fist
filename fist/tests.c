@@ -106,7 +106,98 @@ static char *test_push_array_dstring() {
     return 0;
 }
 
+static char *test_free_array_dstring() {
+    dstring test_val = dcreate("Eml1");
+    dstring test_val_2 = dcreate("Eml2");
+    dstringa array = dcreatea();
+    array = dpush(array, test_val);
+    array = dpush(array, test_val_2);
+    int freed = dfreea(array);
+    mu_assert("dfreea: Free array", freed == array.length);
+    return 0;
+}
+
+static char *test_indexof_array_dstring() {
+    dstring test_val_1 = dcreate("one");
+    dstring test_val_2 = dcreate("two");
+    dstringa array = dcreatea();
+    array = dpush(array, test_val_1);
+    array = dpush(array, test_val_2);
+    int index = dindexofa(array, test_val_2);
+    mu_assert("dindexof: Index correct", index == 1);
+    return 0;
+}
+
+static char *test_pop_array_dstring() {
+    dstring test_val_1 = dcreate("one");
+    dstring test_val_2 = dcreate("two");
+    dstringa array = dcreatea();
+    array = dpush(array, test_val_1);
+    array = dpush(array, test_val_2);
+    mu_assert("dpop: Last item correct", !strcmp(array.values[1].text, test_val_2.text));
+    array = dpop(array);
+    mu_assert("dpop: Correct size", array.length == 1);
+    return 0;
+}
+
+static char *test_remove_array_dstring() {
+    dstring test_val_1 = dcreate("one");
+    dstring test_val_2 = dcreate("two");
+    dstringa array = dcreatea();
+    array = dpush(array, test_val_1);
+    array = dpush(array, test_val_2);
+    mu_assert("dremove: Item exists", dindexofa(array, test_val_1) == 0);
+    mu_assert("dremove: Length correct", array.length == 2); 
+    array = dremove(array, test_val_1);
+    mu_assert("dremove: Item removed", dindexofa(array, test_val_1) == -1);
+    mu_assert("dremove: Length changed", array.length == 1);
+    return 0;
+}
+
+static char *test_set_array_dstring() {
+    dstring test_val_1 = dcreate("one");
+    dstring test_val_2 = dcreate("two");
+    dstring test_replace_val = dcreate("three");
+    dstringa array = dcreatea();
+    array = dpush(array, test_val_1);
+    array = dpush(array, test_val_2);
+    array = dset(array, 0, test_replace_val);
+    mu_assert("dset: First index reset", !strcmp(array.values[0].text, test_replace_val.text));
+    return 0;
+}
+
+static char *test_substr_dstring() {
+    dstring test_val = dcreate("Hello World!");
+    dstring substr = dsubstr(test_val, 6, 10);
+    mu_assert("dsubstr: Equals World", !strcmp(substr.text, "World"));
+    return 0;
+}
+
+static char *test_trim_dstring() {
+    dstring test_val = dcreate("\r\n Hello World! \r\n");
+    mu_assert("dtrim: Has Spaces", strcmp(test_val.text, "Hello World!"));
+    test_val = dtrim(test_val);
+    mu_assert("dtrimg: Does not have spaces", !strcmp(test_val.text, "Hello World!"));
+    return 0;
+}
+
+static char *test_replace_dstring() {
+    dstring test_val = dcreate("Hello World!");
+    mu_assert("dreplace: Original Correct", !strcmp(test_val.text, "Hello World!"));
+    test_val = dreplace(test_val, 'l', '1');
+    mu_assert("dreplace: Repalced Correct", !strcmp(test_val.text, "He11o Wor1d!"));
+    return 0;
+}
+
 static char *all_tests() {
+    mu_run_test(test_replace_dstring);
+    mu_run_test(test_trim_dstring);
+    mu_run_test(test_substr_dstring);
+    mu_run_test(test_set_array_dstring);
+    mu_run_test(test_remove_array_dstring);
+    mu_run_test(test_pop_array_dstring);
+    mu_run_test(test_indexof_array_dstring);
+    mu_run_test(test_free_array_dstring);
     mu_run_test(test_push_array_dstring);
     mu_run_test(test_create_array_dstring);
     mu_run_test(test_indexof_dstring);
