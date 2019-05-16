@@ -1,10 +1,20 @@
 #ifndef H_HASHMAP
 #define H_HASHMAP
 
-#include "linkedlist.h"
+#include "dstring.h"
 
-l_item *h_create();
-l_item *h_add(l_item *ll, char *key, char *value);
-l_item h_get(l_item *ll, char *key);
+typedef struct keyval {
+    dstring key;
+    dstringa values;
+} keyval;
+
+typedef struct hashmap {
+    int length;
+    keyval *maps;
+} hashmap;
+
+hashmap *hcreate();
+hashmap *hset(hashmap *hm, dstring key, dstring value);
+dstringa  hget(hashmap *hm, dstring key);
 
 #endif

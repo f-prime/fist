@@ -1,7 +1,8 @@
 #include <stdio.h>
+#include <string.h>
 #include "minunit.h"
 #include "dstring.h"
-#include <string.h>
+#include "hashmap.h"
 
 int tests_run = 0;
 
@@ -201,7 +202,29 @@ static char *test_dsplit_dstring() {
     return 0;
 }
 
+static char *test_getset_hm() {
+    hashmap *hm = hcreate();
+    dstring key = dcreate("key");
+    dstring key2 = dcreate("key2");
+    dstring value = dcreate("value");
+    dstring value2 = dcreate("value2");
+    hm = hset(hm, key, value);
+    dstringa output = hget(hm, key);
+    mu_assert("hset+hget: Test basic get", dequals(output.values[0], value));
+    hm = hset(hm, key, value2);
+    output = hget(hm, key);
+    mu_assert("hset+hget: Test new value same key", dequals(output.values[1], value2));
+    hm = hset(hm, key2, value);
+    output = hget(hm, key2);
+    mu_assert("hset+hget: Test new value new key", dequals(output.values[0], value)); 
+    hm = hset(hm, key2, value2);
+    output = hget(hm, key2);
+    mu_assert("hset+hget: Test new value same key", dequals(output.values[1], value2)); 
+    return 0;
+}
+
 static char *all_tests() {
+    mu_run_test(test_getset_hm);
     mu_run_test(test_dsplit_dstring);
     mu_run_test(test_replace_dstring);
     mu_run_test(test_trim_dstring);

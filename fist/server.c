@@ -19,10 +19,12 @@
 #define INDEXED "INDEXED"
 #define NOT_FOUND "[]"
 
-l_item *handle_connection(int new_socket, l_item *hm) {
-    printf("Handled\n");
-    char *buffer = malloc(sizeof(char) * 1024);
+//l_item *handle_connection(int new_socket, l_item *hm) {
     
+    //printf("Handled\n");
+    //char *buffer = malloc(sizeof(char) * 1024);
+    
+    /* 
     while(1) { 
         memset(buffer, 0, 1024);
         int size = recv(new_socket, buffer, 1024, 0);
@@ -95,9 +97,13 @@ l_item *handle_connection(int new_socket, l_item *hm) {
     printf("DISCONNECTED\n");
     close(new_socket);
     return hm;
-}
+    */
 
-void start_server(char *host, int port) {
+//    return hm;
+//}
+
+//void start_server(char *host, int port) {
+    /*
     struct sockaddr_in address;
     int addrlen = sizeof(address);
     int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -139,4 +145,5 @@ void start_server(char *host, int port) {
         printf("New connection\n");
         hm = handle_connection(new_socket, hm);
     }
-}
+    */
+//}

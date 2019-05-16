@@ -1,11 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "linkedlist.h"
+#include "dstring.h"
+#include "hashmap.h"
 
-unsigned long HMAP_SIZE = 1000081;
+#define HMAP_SIZE 1000081
 
-unsigned long hash(char *val) {
+/*
+ * [
+ *    {"doc1":["val1", "val2"], "doc2":['val1', 'val2']}
+ *      
+ *    
+ * ]
+ */
+
+int hash(char *val) {
     int sum = 0;
     for(int x = 0; x < strlen(val); x++) {
         sum += (int) val[x];
@@ -13,35 +22,66 @@ unsigned long hash(char *val) {
     return sum % HMAP_SIZE;
 }
 
-l_item * h_create() {
-    l_item *hm = malloc(sizeof(l_item) * HMAP_SIZE);
-    for(int i = 0; i < HMAP_SIZE; i++) {
-        hm[i] = NULL;
-    }
+hashmap *hcreate() {
+    hashmap *hm = malloc(sizeof(hashmap) * HMAP_SIZE);
     return hm;
 }
 
-
-l_item *h_add(l_item *ll, char *key, char *value) {
-    unsigned long hval = hash(key);
-    l_item entry = ll[hval];
-    if(entry == NULL) {
-        ll[hval] = malloc(sizeof(l_item));
-        l_item item = ll_create();
-        item = ll_add(item, key, value);
-        ll[hval] = item;
+hashmap *hset(hashmap *hm, dstring key, dstring value) {
+    int hash_val = hash(key.text);
+    hashmap map_array = hm[hash_val];
+    int length = map_array.length;
+    if(length == 0) {
+        map_array.maps = malloc(sizeof(keyval));
+        map_array.maps[0].key = key;
+        map_array.maps[0].values = dpush(dcreatea(), value);
+        map_array.length++;
+        hm[hash_val] = map_array;
     } else {
-        ll_add(entry, key, value);
+        int index = -1;
+        for(int i = 0; i < length; i++) {
+            keyval on = map_array.maps[i];
+            if(dequals(on.key, key)) {
+                index = i;
+                break;
+            }
+        }
+        int new_length = length + 1;
+        if(index == -1) { // Element not in array
+            map_array.maps = realloc(map_array.maps, sizeof(keyval) * new_length);
+            dstringa values = dcreatea();
+            values = dpush(values, value);
+            keyval new_keyval = {key, values};
+            map_array.maps[length] = new_keyval;
+            map_array.length++;
+            hm[hash_val] = map_array;
+        } else { // Element in array
+            dstringa values = map_array.maps[index].values;
+            map_array.maps[index].values = dpush(values, value);
+            hm[hash_val] = map_array;
+        }
     }
-    return ll;
+
+    return hm;
 }
 
-l_item h_get(l_item *ll, char *key) {
-    unsigned long hval = hash(key);
-    l_item entry = ll[hval];
-    if(entry == NULL)
-        return NULL;
+dstringa hget(hashmap *hm, dstring key) {
+    int hash_val = hash(key.text);
+    hashmap map_array = hm[hash_val];
+    int length = map_array.length;
+    if(length == 0) {
+        dstringa empty = dcreatea();
+        return empty;
+    }
     
-    l_item real_entry = ll_key(entry, key);
-    return real_entry;
+    dstringa values = dcreatea();
+    for(int i = 0; i < length; i++) {
+        keyval on = map_array.maps[i];
+        if(dequals(on.key, key)) {
+            values = on.values;
+            break;
+        }
+    }
+
+    return values;
 }

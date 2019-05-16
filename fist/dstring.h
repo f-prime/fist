@@ -11,6 +11,7 @@ typedef struct dstringa {
     dstring *values;
 } dstringa;
 
+int dequals(dstring s1, dstring s2);
 dstring dappendc(dstring input, char character); // Apppend single char to string
 dstring dappend(dstring input, char *characters); // Appends a string to the end of the dstring
 dstring dtrim(dstring input); // Trims whitespace and new line characters from beginning and end of dstring
@@ -32,7 +33,6 @@ dstringa dremove(dstringa array, dstring input); // Remove item from dstring arr
 dstringa dpop(dstringa array); // Pop from stack
 int dindexofa(dstringa array, dstring input); // Find index of dstring
 dstringa dset(dstringa array, unsigned int index, dstring with); // Replace index in dstring array with another dstring
-
-int dfreea(dstringa array);
+int dfreea(dstringa array); // Frees a dstring array
 
 #endif

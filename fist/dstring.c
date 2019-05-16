@@ -3,6 +3,10 @@
 #include "dstring.h"
 #include <stdlib.h>
 
+int dequals(dstring s1, dstring s2) {
+    return !strcmp(s1.text, s2.text); 
+}
+
 dstring dappendc(dstring input, char character) {
     int new_size = input.length + 2;
     char *string = realloc(input.text, sizeof(char) * new_size);
