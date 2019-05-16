@@ -6,14 +6,6 @@
 
 #define HMAP_SIZE 1000081
 
-/*
- * [
- *    {"doc1":["val1", "val2"], "doc2":['val1', 'val2']}
- *      
- *    
- * ]
- */
-
 int hash(char *val) {
     int sum = 0;
     for(int x = 0; x < strlen(val); x++) {
