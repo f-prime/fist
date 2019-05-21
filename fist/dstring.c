@@ -86,9 +86,10 @@ dstringa dcreatea() {
 }
 
 dstringa dpush(dstringa array, dstring input) {
+    dstring new = dcreate(input.text); // Created new object
     int new_length = array.length + 1;
     dstring *new_array = realloc(array.values, sizeof(dstring) * new_length);
-    new_array[array.length] = input;
+    new_array[array.length] = new;
     dstringa new_dstringa = {new_length, new_array};
     return new_dstringa;
 }
@@ -103,6 +104,44 @@ int dindexofa(dstringa array, dstring input) {
     }
 
     return index;
+}
+
+dstring djoin(dstringa array, char with) {
+    dstring output = dempty();
+    for(int i = 0; i < array.length; i++) {
+        output = dappend(output, array.values[i].text);
+        if( i != array.length - 1)
+            output = dappendc(output, with);
+    }
+
+    return output;
+}
+
+dstringa drange(dstringa array, int start, int end) {
+    if(start > end) {
+        int tmp = start;
+        start = end;
+        end = tmp;
+    }
+
+    if(start < 0) {
+        start = 0;
+    } else if(start >= array.length) {
+        start = array.length - 1;
+    }
+
+    if(end < 0) {
+        end = 0;
+    } else if(end >= array.length) {
+        end = array.length - 1;
+    }
+
+    dstringa output = dcreatea();
+    for(int i = start; i <= end; i++) {
+        output = dpush(output, array.values[i]);
+    }
+
+    return output;
 }
 
 dstringa dsplit(dstring input, char at) {

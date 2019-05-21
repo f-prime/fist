@@ -33,6 +33,7 @@ dstringa dremove(dstringa array, dstring input); // Remove item from dstring arr
 dstringa dpop(dstringa array); // Pop from stack
 int dindexofa(dstringa array, dstring input); // Find index of dstring
 dstringa dset(dstringa array, unsigned int index, dstring with); // Replace index in dstring array with another dstring
+dstringa drange(dstringa array, int start, int end); // Return new array between two ranges
 int dfreea(dstringa array); // Frees a dstring array
-
+dstring djoin(dstringa array, char with); // Joins a string with a character
 #endif

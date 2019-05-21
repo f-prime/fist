@@ -1,11 +1,7 @@
 #ifndef H_INDEXER
 #define H_INDEXER
+#include "dstring.h"
 
-typedef struct t_index {
-    char **index;
-    int length;
-} t_index;
-
-t_index indexer(char *text, int max_phrase_length);
+dstringa indexer(dstring text, int max_phrase_length);
 
 #endif

@@ -1,8 +1,10 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "minunit.h"
 #include "dstring.h"
 #include "hashmap.h"
+#include "indexer.h"
 
 int tests_run = 0;
 
@@ -223,7 +225,78 @@ static char *test_getset_hm() {
     return 0;
 }
 
+static char *test_indexer() {
+    dstring test = dcreate("This is very cool");
+    dstringa answers = dcreatea();
+    answers = dpush(answers, dcreate("This"));
+    answers = dpush(answers, dcreate("is"));
+    answers = dpush(answers, dcreate("very"));
+    answers = dpush(answers, dcreate("cool"));
+    answers = dpush(answers, dcreate("This is"));
+    answers = dpush(answers, dcreate("is very"));
+    answers = dpush(answers, dcreate("very cool"));
+    answers = dpush(answers, dcreate("This is very"));
+    answers = dpush(answers, dcreate("is very cool"));
+    answers = dpush(answers, dcreate("This is very cool"));
+    dstringa index = indexer(test, 10);
+    
+    for(int i = 0; i < answers.length; i++) {
+        char *buffer = malloc(sizeof(char) * 1024);
+        sprintf(buffer, "indexer: Expecting '%s' got '%s'", answers.values[i].text, index.values[i].text);
+        mu_assert(buffer, dequals(answers.values[i], index.values[i]));
+    }
+    return 0;
+}
+
+static char *test_drange_dstring() {
+    dstringa test = dcreatea();
+    test = dpush(test, dcreate("Hello"));
+    test = dpush(test, dcreate("this"));
+    test = dpush(test, dcreate("is"));
+    test = dpush(test, dcreate("really"));
+    test = dpush(test, dcreate("cool"));
+
+    dstringa test1 = drange(test, 2, 4);
+    mu_assert("drange: Basic 1", dequals(test1.values[0], dcreate("is")));
+    mu_assert("drange: Basic 2", dequals(test1.values[1], dcreate("really")));
+    mu_assert("drange: Basic 3", dequals(test1.values[2], dcreate("cool")));
+
+    dstringa test2 = drange(test, -1, 100);
+
+    mu_assert("drange: Bad ranges 1", dequals(test2.values[0], dcreate("Hello")));
+    mu_assert("drange: Bad ranges 2", dequals(test2.values[4], dcreate("cool")));
+    
+    dstringa test3 = drange(test, 100, -1);
+    
+    mu_assert("drange: Bad ranges 3", dequals(test3.values[0], dcreate("Hello")));
+    mu_assert("drange: Bad ranges 4", dequals(test3.values[4], dcreate("cool")));
+    
+    dstringa test4 = drange(test, 0, 0);
+
+    mu_assert("drange: Same start and end", dequals(test4.values[0], dcreate("Hello")));
+    
+    return 0;
+}
+
+static char *test_djoin_dstring() {
+    dstringa test = dcreatea();
+    test = dpush(test, dcreate("Hello"));
+    test = dpush(test, dcreate("this"));
+    test = dpush(test, dcreate("is"));
+    test = dpush(test, dcreate("really"));
+    test = dpush(test, dcreate("cool"));
+    
+    dstring answer = dcreate("Hello,this,is,really,cool");
+    dstring joined = djoin(test, ',');
+    mu_assert("djoin", dequals(answer, joined));
+
+    return 0;
+}
+
 static char *all_tests() {
+    mu_run_test(test_djoin_dstring);
+    mu_run_test(test_drange_dstring);
+    mu_run_test(test_indexer);
     mu_run_test(test_getset_hm);
     mu_run_test(test_dsplit_dstring);
     mu_run_test(test_replace_dstring);
