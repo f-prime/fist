@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
     if(argc == 2 && !strcmp(argv[1], "test")) {
         run_tests();
     } else {
-//        start_server("127.0.0.1", 5575);
+        start_server("127.0.0.1", 5575);
     }
 
     return 0;

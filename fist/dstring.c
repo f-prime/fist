@@ -145,10 +145,11 @@ dstringa drange(dstringa array, int start, int end) {
 }
 
 dstringa dsplit(dstring input, char at) {
+    dstring new = dcreate(input.text);
     dstringa array = dcreatea();
     dstring string = dempty();
-    for(int i = 0; i < input.length; i++) {
-        char on = input.text[i];
+    for(int i = 0; i < new.length; i++) {
+        char on = new.text[i];
         if(on == at && string.length > 0) {
             array = dpush(array, string);
             string = dempty();
