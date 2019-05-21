@@ -1,4 +1,4 @@
-# Fist - (F)ull-text (i)ndex (s)erver (t) 
+# Fist - (F)ull-(t)ext (i)ndex (s)erver 
 
 Fist is a fast, lightweight, full-text search and index server. Fist stores all information in memory making lookups very fast while also persisting the index to disk. The index can be accessed over a TCP connection and all data returned is valid JSON.
 
@@ -11,7 +11,7 @@ Setting up Elasticsearch when Elasticsearch really isn't needed for the particul
 
 This is where Fist comes in. Fist is intended to be extremely easy to deploy and integrate into your application. Just start the Fist server and start sending commands.
 
-# Build
+# Build and start Fist server
 
 ```
 make build
