@@ -28,7 +28,7 @@ make build
 
 Commands can be sent over using the `fist-cli.py` CLI tool (being developed).  
 
-Commands: `INDEX`, `SEARCH`, `DELETE`
+Commands: `INDEX`, `SEARCH`, `DELETE`, `EXIT`
 
 ```
 fist> INDEX document_1 Some text that I want to index
@@ -39,6 +39,8 @@ fist> SEARCH I want to index
 fist> DELETE I want to index
 fist> SEARCH I want to index
 []
+fist> EXIT
+Bye
 ```
 
 # Key Features

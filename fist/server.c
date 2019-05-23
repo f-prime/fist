@@ -22,6 +22,7 @@
 #define TOO_FEW_ARGUMENTS "Too few arguments\n"
 #define NOT_FOUND "[]\n"
 #define INVALID_COMMAND "Invalid Command\n"
+#define BYE "Bye\n"
 
 hashmap * handle_connection(int new_socket, hashmap *hm) {  
     while(1) {
@@ -40,9 +41,10 @@ hashmap * handle_connection(int new_socket, hashmap *hm) {
         dstring trimmed = dtrim(req);
         dstringa commands = dsplit(trimmed, ' ');
         printf("%d '%s'\n", req.length, trimmed.text);
-        if(dequals(trimmed, dcreate(EXIT)))
+        if(dequals(trimmed, dcreate(EXIT))) {
+            send(new_socket, BYE, strlen(BYE), 0);
             break;
-
+        }
         if(dequals(commands.values[0], dcreate(INDEX))) { 
             printf("INDEX\n");
             if(commands.length < 3) {
