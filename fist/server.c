@@ -17,11 +17,14 @@
 
 // Responses
 
-#define INDEXED "INDEXED"
-#define NOT_FOUND "[]"
+#define INDEXED "Text has been indexed\n"
+#define TOO_FEW_ARGUMENTS "Too few arguments\n"
+#define NOT_FOUND "[]\n"
+#define INVALID_COMMAND "Invalid Command\n"
 
 hashmap * handle_connection(int new_socket, hashmap *hm) {  
-    while(1) {
+    int run = 1;
+    while(run) {
         dstring req = dempty();
         while(dindexof(req, '\n') == -1 || dindexof(req, '\r') == -1) {
             char buffer[1025]; // Need to preserve the last character being a null character
@@ -35,6 +38,52 @@ hashmap * handle_connection(int new_socket, hashmap *hm) {
         printf("%d %s\n", req.length, trimmed.text); 
         if(dequals(req, dcreate("exit")))
             break;
+
+        if(dequals(commands.values[0], dcreate(INDEX))) { 
+            printf("INDEX\n");
+            if(commands.length < 3) {
+                send(new_socket, TOO_FEW_ARGUMENTS, strlen(TOO_FEW_ARGUMENTS), 0); 
+            } else {
+                dstring document = commands.values[1];
+                dstring text = djoin(drange(commands, 2, commands.length), ' ');
+                printf("TEXT: '%s'\n", text.text);
+                dstringa index = indexer(text, 10);
+                printf("INDEX SIZE: %d\n", index.length);
+                for(int i = 0; i < index.length; i++) {
+                    dstring on = index.values[i];
+                    hm = hset(hm, on, document);
+                }
+                send(new_socket, INDEXED, strlen(INDEXED), 0);
+            }
+        } else if(dequals(commands.values[0], dcreate(SEARCH))) {
+            printf("SEARCH\n");
+            if(commands.length < 2) {
+                send(new_socket, TOO_FEW_ARGUMENTS, strlen(TOO_FEW_ARGUMENTS), 0);
+            } else {
+                dstring text = djoin(drange(commands, 1, commands.length), ' ');
+                printf("SEARCH STRING: '%s'\n", text.text);
+                dstringa value = hget(hm, text);
+                printf("%d\n", value.length);
+                if(!value.length) {
+                    send(new_socket, NOT_FOUND, strlen(NOT_FOUND), 0);
+                } else {
+                    dstring output = dcreate("[");
+                    for(int i = 0; i < value.length; i++) { // This builds the JSON array output
+                        dstring on = value.values[i];
+                        output = dappendc(output, '"');
+                        output = dappend(output, on.text);
+                        output = dappendc(output, '"');
+                        if(i != value.length - 1)
+                            output = dappendc(output, ',');
+                    }
+                    output = dappendc(output, ']');
+                    output = dappendc(output, '\n');
+                    send(new_socket, output.text, output.length, 0);
+                }
+            }
+        } else {
+            send(new_socket, INVALID_COMMAND, strlen(INVALID_COMMAND), 0); 
+        }
     }
     close(new_socket);
     return hm;
@@ -69,7 +118,7 @@ void start_server(char *host, int port) {
         exit(EXIT_FAILURE);
     }
 
-    printf("Spear started at localhost:%d\n", port); 
+    printf("Fist started at localhost:%d\n", port); 
 
     hashmap *hm = hcreate();
 
