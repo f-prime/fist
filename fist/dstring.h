@@ -23,6 +23,7 @@ dstring dempty(); // Creates an empty dstring
 dstring dsubstr(dstring input, unsigned int start, unsigned int end); // Returns the string between to indices of the input dstring
 int dcount(dstring input, char character); // Count occurances of a character in the dstring
 int dfree(dstring string); // Frees a dstring's memory
+dstring dappendd(dstring input, dstring word); // Append two dstrings together
 
 // List of dstrings 
 

@@ -28,6 +28,10 @@ dstring dappend(dstring input, char *characters) {
     return input;
 }
 
+dstring dappendd(dstring input, dstring word) {
+    return dappend(input, word.text);
+}
+
 dstring dempty() {
     char *empty = malloc(sizeof(char));
     empty[0] = 0;
@@ -46,15 +50,11 @@ dstring dcreate(char *initial) {
 }
 
 dstring dreverse(dstring input) {
-    char *reversed = malloc(sizeof(char) * input.length + 1);
-    memset(reversed, 0, input.length + 1);
-    int reversed_buffer_on = 0;
+    dstring reversed = dempty();
     for(int i = input.length - 1; i >= 0; i--) {
-        reversed[reversed_buffer_on] = input.text[i];
-        reversed_buffer_on++;
+        reversed = dappendc(reversed, input.text[i]);
     }
-    dstring reversed_dstring = {input.length, reversed};
-    return reversed_dstring;
+    return reversed;
 }
 
 int dcount(dstring input, char character) {

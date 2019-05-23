@@ -23,20 +23,23 @@
 #define INVALID_COMMAND "Invalid Command\n"
 
 hashmap * handle_connection(int new_socket, hashmap *hm) {  
-    int run = 1;
-    while(run) {
+    while(1) {
         dstring req = dempty();
         while(dindexof(req, '\n') == -1 || dindexof(req, '\r') == -1) {
             char buffer[1025]; // Need to preserve the last character being a null character
             memset(buffer, 0, 1025);
-            recv(new_socket, buffer, 1024, 0); // Only fill 1024 of the 1025 bytes
+            int reqsize = recv(new_socket, buffer, 1024, 0); // Only fill 1024 of the 1025 bytes
+            if(reqsize == 0) 
+                break;
             req = dappend(req, buffer);
         }
-        
+        if(req.length == 0)
+            break;
+
         dstring trimmed = dtrim(req);
         dstringa commands = dsplit(trimmed, ' ');
-        printf("%d %s\n", req.length, trimmed.text); 
-        if(dequals(req, dcreate("exit")))
+        printf("%d '%s'\n", req.length, trimmed.text);
+        if(dequals(trimmed, dcreate("exit")))
             break;
 
         if(dequals(commands.values[0], dcreate(INDEX))) { 
@@ -71,7 +74,7 @@ hashmap * handle_connection(int new_socket, hashmap *hm) {
                     for(int i = 0; i < value.length; i++) { // This builds the JSON array output
                         dstring on = value.values[i];
                         output = dappendc(output, '"');
-                        output = dappend(output, on.text);
+                        output = dappendd(output, on);
                         output = dappendc(output, '"');
                         if(i != value.length - 1)
                             output = dappendc(output, ',');

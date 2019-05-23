@@ -238,6 +238,8 @@ static char *test_indexer() {
     answers = dpush(answers, dcreate("This is very"));
     answers = dpush(answers, dcreate("is very cool"));
     answers = dpush(answers, dcreate("This is very cool"));
+    dstring t2 = dcreate("1 2 3 4 5 6 7 8 9 10 11 12 13");
+    indexer(t2, 10);
     dstringa index = indexer(test, 10);
     
     for(int i = 0; i < answers.length; i++) {
@@ -293,7 +295,16 @@ static char *test_djoin_dstring() {
     return 0;
 }
 
+static char *test_dappendd_dstring() {
+    dstring text = dcreate("Hello");
+    dstring append = dcreate(" World");
+    text = dappendd(text, append);
+    mu_assert("dappendd", dequals(text, dcreate("Hello World")));
+    return 0;
+}
+
 static char *all_tests() {
+    mu_run_test(test_dappendd_dstring);
     mu_run_test(test_djoin_dstring);
     mu_run_test(test_drange_dstring);
     mu_run_test(test_indexer);
