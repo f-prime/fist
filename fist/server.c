@@ -14,6 +14,7 @@
 
 #define INDEX "INDEX"
 #define SEARCH "SEARCH"
+#define EXIT "EXIT"
 
 // Responses
 
@@ -39,7 +40,7 @@ hashmap * handle_connection(int new_socket, hashmap *hm) {
         dstring trimmed = dtrim(req);
         dstringa commands = dsplit(trimmed, ' ');
         printf("%d '%s'\n", req.length, trimmed.text);
-        if(dequals(trimmed, dcreate("exit")))
+        if(dequals(trimmed, dcreate(EXIT)))
             break;
 
         if(dequals(commands.values[0], dcreate(INDEX))) { 
@@ -66,7 +67,7 @@ hashmap * handle_connection(int new_socket, hashmap *hm) {
                 dstring text = djoin(drange(commands, 1, commands.length), ' ');
                 printf("SEARCH STRING: '%s'\n", text.text);
                 dstringa value = hget(hm, text);
-                printf("%d\n", value.length);
+                printf("SEARCH RESULTS SIZE: %d\n", value.length);
                 if(!value.length) {
                     send(new_socket, NOT_FOUND, strlen(NOT_FOUND), 0);
                 } else {

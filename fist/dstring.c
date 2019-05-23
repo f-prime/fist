@@ -97,12 +97,11 @@ dstringa dpush(dstringa array, dstring input) {
 int dindexofa(dstringa array, dstring input) {
     int index = -1;
     for(int i = 0; i < array.length; i++) {
-        if(!strcmp(array.values[i].text, input.text)) {
+        if(dequals(array.values[i], input)) {
             index = i;
             break;
         }
     }
-
     return index;
 }
 

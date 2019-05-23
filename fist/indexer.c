@@ -6,7 +6,6 @@
 #include "utils.h"
 
 dstringa indexer(dstring text, int max_phrase_length) {
-    // Needs to be fixed. Only indexing the first 10 words
     dstringa words = dsplit(text, ' ');
     dstringa index = dcreatea();
     

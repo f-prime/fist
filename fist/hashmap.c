@@ -49,8 +49,10 @@ hashmap *hset(hashmap *hm, dstring key, dstring value) {
             hm[hash_val] = map_array;
         } else { // Element in array
             dstringa values = map_array.maps[index].values;
-            map_array.maps[index].values = dpush(values, value);
-            hm[hash_val] = map_array;
+            if(dindexofa(values, value) == -1) {
+                map_array.maps[index].values = dpush(values, value);
+                hm[hash_val] = map_array;
+            }
         }
     }
 
