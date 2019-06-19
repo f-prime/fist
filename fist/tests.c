@@ -5,6 +5,7 @@
 #include "dstring.h"
 #include "hashmap.h"
 #include "indexer.h"
+#include "serializer.h"
 
 int tests_run = 0;
 
@@ -303,7 +304,28 @@ static char *test_dappendd_dstring() {
     return 0;
 }
 
+static char *test_serialize_hmap() {
+    hashmap *hm = hcreate();
+    dstring key = dcreate("index");
+    dstring key2 = dcreate("index2");
+    dstring value = dcreate("d1");
+    dstring value2 = dcreate("d2");
+    dstring value3 = dcreate("d3");
+    hm = hset(hm, key, value);
+    hm = hset(hm, key, value2);
+    hm = hset(hm, key2, value3); 
+    sdump(hm);
+    
+    return 0;
+}
+
+static char *test_deserialize_hmap() {
+    return 0;
+}
+
 static char *all_tests() {
+    mu_run_test(test_serialize_hmap);
+    mu_run_test(test_deserialize_hmap);
     mu_run_test(test_dappendd_dstring);
     mu_run_test(test_djoin_dstring);
     mu_run_test(test_drange_dstring);

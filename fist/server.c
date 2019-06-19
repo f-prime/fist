@@ -9,6 +9,7 @@
 #include "hashmap.h"
 #include "server.h"
 #include "dstring.h"
+#include "serializer.h"
 
 // Commands
 
@@ -92,6 +93,7 @@ hashmap * handle_connection(int new_socket, hashmap *hm) {
         }
     }
     close(new_socket);
+    sdump(hm); // Save new DB state to file
     return hm;
 }
 
@@ -126,7 +128,7 @@ void start_server(char *host, int port) {
 
     printf("Fist started at localhost:%d\n", port); 
 
-    hashmap *hm = hcreate();
+    hashmap *hm = sload(); // Loads database file if it exists, otherwise returns an empty hashmap
 
     while(1) {
         int new_socket = accept(socket_fd, (struct sockaddr *) &address, (socklen_t*)&addrlen);
