@@ -315,17 +315,14 @@ static char *test_serialize_hmap() {
     hm = hset(hm, key, value2);
     hm = hset(hm, key2, value3); 
     sdump(hm);
-    
-    return 0;
-}
-
-static char *test_deserialize_hmap() {
+    hashmap *loaded = sload(); 
+    dstringa get_from_loaded = hget(loaded, key2);
+    printf("size: %d\n", get_from_loaded.length);
     return 0;
 }
 
 static char *all_tests() {
     mu_run_test(test_serialize_hmap);
-    mu_run_test(test_deserialize_hmap);
     mu_run_test(test_dappendd_dstring);
     mu_run_test(test_djoin_dstring);
     mu_run_test(test_drange_dstring);
