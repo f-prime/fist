@@ -305,6 +305,7 @@ static char *test_dappendd_dstring() {
 }
 
 static char *test_serialize_hmap() {
+    rename("fist.db", "fist.db.real");
     hashmap *hm = hcreate();
     dstring key = dcreate("index");
     dstring key2 = dcreate("index2");
@@ -317,7 +318,12 @@ static char *test_serialize_hmap() {
     sdump(hm);
     hashmap *loaded = sload(); 
     dstringa get_from_loaded = hget(loaded, key2);
-    printf("size: %d\n", get_from_loaded.length);
+    dstringa key1vals = hget(loaded, key);
+    mu_assert("Serialized data size", get_from_loaded.length == 1);
+    mu_assert("key2 == value3", dequals(get_from_loaded.values[0], value3));
+    mu_assert("key1 contains value", dequals(key1vals.values[0], value));
+    mu_assert("key2 contains value2", dequals(key1vals.values[1], value2));
+    rename("fist.db.real", "fist.db");
     return 0;
 }
 

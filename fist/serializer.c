@@ -56,13 +56,27 @@ hashmap *sload() {
         for(int i = 0; i < num_keys; i++) {
             int key_size;
             fread(&key_size, sizeof(key_size), 1, db);
-            char index_value[key_size + 1];
-            fread(index_value, key_size, 1, db); 
+            char key[key_size + 1];
+            key[key_size] = 0;
+            fread(key, key_size, 1, db); 
             int num_vals;
             fread(&num_vals, sizeof(num_vals), 1, db);
-            printf("%d %d %s %d\n", num_keys, key_size, index_value, num_vals);
-            break;
+            //printf("%d %d %s %d\n", num_keys, key_size, key, num_vals);
+            for(int j = 0; j < num_vals; j++) {
+                int val_size;
+                fread(&val_size, sizeof(val_size), 1, db);
+                char value[val_size + 1];
+                value[val_size] = 0;
+                fread(value, val_size, 1, db);
+                //printf("%d %s\n", val_size, value);
+                hmap = hset(hmap, dcreate(key), dcreate(value));
+            }
         }
-    } 
+
+        printf("Database file has been loaded. Previous state restored.\n");
+    } else {
+        printf("No previous state found. Creating new database file.\n");
+    }
+
     return hmap;
 }
