@@ -1,6 +1,6 @@
 # Fist - (F)ull-(t)ext (i)ndex (s)erver 
 
-![https://img.shields.io/badge/Slack-Join%20the%20slack%20channel-BLUE.svg](https://join.slack.com/t/fist-global/shared_invite/enQtNjcyNzY4MTUwMDg0LTRiYzM5ZWNkOTMwODYzODRjNDQzNThiYjdhNjgzZDUxZGYxODRjOTI4NTcwYmYzYmI5MTViYjFiNGFlNWEwYjY)
+[![Slack](https://img.shields.io/badge/Slack-Join%20the%20slack%20channel-BLUE.svg)](https://join.slack.com/t/fist-global/shared_invite/enQtNjcyNzY4MTUwMDg0LTRiYzM5ZWNkOTMwODYzODRjNDQzNThiYjdhNjgzZDUxZGYxODRjOTI4NTcwYmYzYmI5MTViYjFiNGFlNWEwYjY)
 
 Fist is a fast, lightweight, full-text search and index server. Fist stores all information in memory making lookups very fast while also persisting the index to disk. The index can be accessed over a TCP connection and all data returned is valid JSON.
 
