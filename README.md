@@ -4,6 +4,8 @@ Fist is a fast, lightweight, full-text search and index server. Fist stores all 
 
 **Fist is still heavily under development. Not all features are implemented or stable yet.**
 
+Join the chat on slack [here](https://join.slack.com/t/fist-global/shared_invite/enQtNjc1MzgxMDc0NzI2LTI1ZWY5ODg0ZWEyNGM1OWVhY2MyOGIxMzYyODM1MjJjOWM4ZDkwZjlhNjg2MTYyMTkzZGEwMTdlNTAzNTA2NjM)
+
 # Motivation
 
 Most software that requires full-text search is not really that complicated and does not need an overly complex solution. Using a complex solution often times leads to headaches. 
