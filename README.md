@@ -54,4 +54,4 @@ Bye
 
 - Full text indexing and searching
 - Persisting data to disk
-- Accessable over TCP connection
+- Accessible over TCP connection
