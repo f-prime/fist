@@ -1,0 +1,18 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: alpine:latest
+    steps:
+      - checkout
+      - run:
+          name: Setup build tools
+          command: apk add g++ make valgrind cppcheck
+      - run:
+          name: Build
+          command: make
+      - run:
+          name: Test
+          command: make test
+      - store_artifacts:
+          path: bin/fist
