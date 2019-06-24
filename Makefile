@@ -16,7 +16,7 @@ BIN_DEPS := $(BIN_SOURCES:=.d)
 
 CC ?= gcc
 CFLAGS ?= -Wall -O2 -g
-CFLAGS += -std=c99
+CFLAGS += -std=c99 -D_DEFAULT_SOURCE
 LDFLAGS ?=
 LDLIBS :=
 MKDIR ?= mkdir -p

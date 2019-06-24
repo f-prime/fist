@@ -1,5 +1,6 @@
 #include "server.h"
 
+#include <errno.h>
 #include <netinet/in.h>
 #include <signal.h>
 #include <stdio.h>
@@ -19,6 +20,7 @@
 #define MAX_PHRASE_LENGTH 10
 #define READ_MAX 1024
 #define SO_BACKLOG 10
+#define SAVE_SECONDS 120
 
 #define BYE "Bye\n"
 #define INDEXED "Text has been indexed\n"
@@ -32,7 +34,9 @@
 
 static const int YES = 1;
 
+static int dirty = 0;
 static volatile int running = 1;
+static volatile int should_save = 0;
 
 static int process_command(hashmap *hm, int fd, char *buf, size_t nbytes) {
   dstringa commands;
@@ -64,6 +68,7 @@ static int process_command(hashmap *hm, int fd, char *buf, size_t nbytes) {
 	dstring on = index.values[i];
 	hm = hset(hm, on, document);
       }
+      dirty = 1;
       send(fd, INDEXED, strlen(INDEXED), 0);
     }
   } else if (dequals(commands.values[0], dcreate(SEARCH))) {
@@ -99,8 +104,31 @@ static int process_command(hashmap *hm, int fd, char *buf, size_t nbytes) {
   return 0;
 }
 
+static void sighandler_alarm(int signum) {
+  should_save = 1;
+}
+
 static void sighandler_int(int signum) {
   running = 0;
+}
+
+static void install_sighandlers(void) {
+  struct sigaction sa_int;
+  sa_int.sa_flags = 0;
+  sa_int.sa_handler = sighandler_int;
+  sigemptyset(&(sa_int.sa_mask));
+  sigaddset(&(sa_int.sa_mask), SIGINT);
+  sigaction(SIGINT, &sa_int, NULL);
+
+  if (SAVE_SECONDS > 0) {
+    struct sigaction sa_alrm;
+    sa_alrm.sa_flags = 0;
+    sa_alrm.sa_handler = sighandler_alarm;
+    sigemptyset(&(sa_alrm.sa_mask));
+    sigaddset(&(sa_alrm.sa_mask), SIGALRM);
+    sigaction(SIGALRM, &sa_alrm, NULL);
+    alarm(SAVE_SECONDS);
+  }
 }
 
 int start_server(char *host, int port) {
@@ -113,7 +141,7 @@ int start_server(char *host, int port) {
   struct sockaddr_in server_addr;
   int server_fd;
 
-  signal(SIGINT, sighandler_int);
+  install_sighandlers();
 
   hm = sload(); // Loads database file if it exists, otherwise returns an empty hash map
 
@@ -153,17 +181,25 @@ int start_server(char *host, int port) {
   FD_SET(server_fd, &master_fds);
   fd_max = server_fd;
 
-  // TODO: while (running)
-  // TODO: signal handler to set running
   while (running) {
     char buf[READ_MAX];
     int i;
 
+    if (should_save) {
+      should_save = 0;
+      if (dirty) {
+	dirty = 0;
+	// puts("Saving db...");
+	sdump(hm);
+      }
+      alarm(SAVE_SECONDS);
+    }
+
     copy_fds = master_fds;
 
     if (select(fd_max + 1, &copy_fds, NULL, NULL, NULL) == -1) {
-      perror("select");
-      // TODO: check errno?
+      if (errno != EINTR)
+	perror("select");
       continue;
     }
 
