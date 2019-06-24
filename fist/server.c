@@ -1,6 +1,7 @@
 #include "server.h"
 
 #include <netinet/in.h>
+#include <signal.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/select.h>
@@ -30,6 +31,8 @@
 #define SEARCH "SEARCH"
 
 static const int YES = 1;
+
+static volatile int running = 1;
 
 static int process_command(hashmap *hm, int fd, char *buf, size_t nbytes) {
   dstringa commands;
@@ -96,6 +99,10 @@ static int process_command(hashmap *hm, int fd, char *buf, size_t nbytes) {
   return 0;
 }
 
+static void sighandler_int(int signum) {
+  running = 0;
+}
+
 int start_server(char *host, int port) {
   char buf[READ_MAX];
   struct sockaddr_in client_addr;
@@ -105,6 +112,8 @@ int start_server(char *host, int port) {
   fd_set copy_fds;
   struct sockaddr_in server_addr;
   int server_fd;
+
+  signal(SIGINT, sighandler_int);
 
   hm = sload(); // Loads database file if it exists, otherwise returns an empty hash map
 
@@ -146,7 +155,7 @@ int start_server(char *host, int port) {
 
   // TODO: while (running)
   // TODO: signal handler to set running
-  while (1) {
+  while (running) {
     char buf[READ_MAX];
     int i;
 
@@ -191,4 +200,7 @@ int start_server(char *host, int port) {
       }
     }
   }
+  sdump(hm);
+  puts("Exiting cleanly...");
+  return 0;
 }
