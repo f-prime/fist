@@ -74,6 +74,7 @@ hashmap *sload() {
         }
 
         printf("Database file has been loaded. Previous state restored.\n");
+	fclose(db);
     } else {
         printf("No previous state found. Creating new database file.\n");
     }
