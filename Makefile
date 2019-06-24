@@ -21,6 +21,8 @@ LDFLAGS ?=
 LDLIBS :=
 MKDIR ?= mkdir -p
 RM ?= rm -f
+CLANG_FORMAT ?= clang-format
+DIFF ?= diff
 
 .PHONY: all clean
 
@@ -38,6 +40,13 @@ test: $(BIN)
 
 %.c.o: %.c
 	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
+
+check_format:
+	$(foreach f, $(BIN_SOURCES), $(CLANG_FORMAT) $(f) | $(DIFF) -u $(f) -;)
+
+format:
+	$(foreach f, $(BIN_SOURCES), $(CLANG_FORMAT) -i $(f))
+.PHONY: format check_format
 
 clean:
 	$(RM) $(BIN) $(BIN_OBJECTS) $(BIN_DEPS)
