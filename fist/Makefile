@@ -1,3 +1,3 @@
 
 all: $(find ./ | grep ".c")
-	gcc -Wall *.c -o ./fist 
+	gcc -Wall *.c -g -o ./fist 

@@ -6,9 +6,7 @@
 #include <unistd.h>
 
 #include "indexer.h"
-#include "hashmap.h"
 #include "server.h"
-#include "dstring.h"
 #include "serializer.h"
 
 // Commands

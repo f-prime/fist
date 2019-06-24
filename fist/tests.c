@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "minunit.h"
-#include "dstring.h"
-#include "hashmap.h"
 #include "indexer.h"
 #include "serializer.h"
 

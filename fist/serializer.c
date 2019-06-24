@@ -1,7 +1,5 @@
 #include "stdlib.h"
 #include "stdio.h"
-#include "hashmap.h"
-#include "dstring.h"
 #include "serializer.h"
 
 void sdump(hashmap *hmap) {
