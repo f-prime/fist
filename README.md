@@ -16,7 +16,7 @@ This is where Fist comes in. Fist is intended to be extremely easy to deploy and
 # Build and start Fist server
 
 ```
-make build
+make
 ./bin/fist
 Fist started at localhost:5575
 ```
@@ -24,7 +24,7 @@ Fist started at localhost:5575
 # Run Tests
 
 ```
-./bin/fist test
+make test
 ```
 
 # Example Usage
