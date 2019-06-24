@@ -7,7 +7,7 @@ jobs:
       - checkout
       - run:
           name: Setup build tools
-          command: apk add g++ make valgrind cppcheck
+          command: apk add gcc libc-dev make valgrind cppcheck
       - run:
           name: Build
           command: make
