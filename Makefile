@@ -45,7 +45,7 @@ check_format:
 	$(foreach f, $(BIN_SOURCES), $(CLANG_FORMAT) $(f) | $(DIFF) -u $(f) -;)
 
 format:
-	$(foreach f, $(BIN_SOURCES), $(CLANG_FORMAT) -i $(f))
+	$(foreach f, $(BIN_SOURCES), $(CLANG_FORMAT) -i $(f);)
 .PHONY: format check_format
 
 clean:
