@@ -14,7 +14,7 @@ dstring dappendc(dstring input, char character) {
         if (new_size <= DSTRING_SMALL) {
             string = input.static_text;
         } else {
-            string = malloc(sizeof(char *) * new_size);
+            string = malloc(sizeof(char) * new_size);
             memcpy(string, input.static_text, input.length);
             input.alloc_len = new_size;
             input.text = string;

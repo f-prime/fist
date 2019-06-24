@@ -30,6 +30,12 @@ $(BIN): $(BIN_OBJECTS)
 	$(MKDIR) $(BINDIR)
 	$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
+test: $(BIN)
+	cppcheck --quiet --std=c99 --enable=style,warning,performance,portability,unusedFunction --error-exitcode=1 $(BIN_SOURCES)
+	valgrind --log-file=valgrind.log --leak-check=full --error-exitcode=1  $(BIN) test
+
+.PHONY: test
+
 %.c.o: %.c
 	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
 

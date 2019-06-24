@@ -17,14 +17,7 @@ typedef struct dstringa {
     dstring *values;
 } dstringa;
 
-#define dtext(input) ({ \
-		char *retval; \
-		if (input.alloc_len == 0) \
-			retval = input.static_text; \
-		else \
-			retval = input.text; \
-		retval; \
-	})
+#define dtext(input) (!input.alloc_len ? input.static_text : input.text)
 
 int dequals(dstring s1, dstring s2);
 dstring dappendc(dstring input, char character); // Apppend single char to string
