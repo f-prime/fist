@@ -4,55 +4,74 @@
 #include <stdlib.h>
 
 int dequals(dstring s1, dstring s2) {
-    return !strcmp(s1.text, s2.text); 
+    return !strcmp(dtext(s1), dtext(s2));
 }
 
 dstring dappendc(dstring input, char character) {
     int new_size = input.length + 2;
-    char *string = realloc(input.text, sizeof(char) * new_size);
+    char *string;
+    if (input.alloc_len == 0) {
+        if (new_size <= DSTRING_SMALL) {
+            string = input.static_text;
+        } else {
+            string = malloc(sizeof(char) * new_size);
+            memcpy(string, input.static_text, input.length);
+            input.alloc_len = new_size;
+            input.text = string;
+        }
+    } else {
+        string = realloc(dtext(input), sizeof(char) * new_size);
+        input.alloc_len = new_size;
+        input.text = string;
+    }
     string[input.length] = character;
     string[input.length + 1] = 0;
     input.length++;
-    input.text = string;
     return input;
 }
 
 dstring dappend(dstring input, char *characters) {
     int increase_by = strlen(characters) + 1;
-    int new_size = strlen(input.text) + increase_by;
-    char *new_dstring = realloc(input.text, sizeof(char) * new_size);
-    strncat(new_dstring, characters, increase_by - 1);
-    new_dstring[new_size - 1] = 0;
+    int new_size = strlen(dtext(input)) + increase_by;
+    char *new_dstring = NULL;
+
+    if (input.alloc_len == 0) {
+        if (new_size <= DSTRING_SMALL) {
+            new_dstring = input.static_text;
+        } else {
+            new_dstring = malloc(sizeof(char) * new_size);
+            strcpy(new_dstring, input.static_text);
+            input.alloc_len = new_size;
+            input.text = new_dstring;
+        }
+    } else {
+        new_dstring = realloc(input.text, sizeof(char) * new_size);
+        input.alloc_len = new_size;
+        input.text = new_dstring;
+    }
+    memcpy(&new_dstring[input.length], characters, increase_by);
+
     input.length += increase_by - 1;
-    input.text = new_dstring;
     return input;
 }
 
 dstring dappendd(dstring input, dstring word) {
-    return dappend(input, word.text);
+    return dappend(input, dtext(word));
 }
 
 dstring dempty() {
-    char *empty = malloc(sizeof(char));
-    empty[0] = 0;
-    dstring empty_dstring = {0, empty};
+    dstring empty_dstring = {0, NULL, 0, {'\0'}};
     return empty_dstring;
 }
 
 dstring dcreate(char *initial) {
-    int string_length = strlen(initial);
-    int buff_size = strlen(initial) + 1;
-    char *buffer = malloc(sizeof(char) * buff_size);
-    memset(buffer, 0, buff_size);
-    memcpy(buffer, initial, string_length);
-    dstring new_dstring = {string_length, buffer};
-    return new_dstring;
+    return dappend(dempty(), initial);
 }
 
 dstring dreverse(dstring input) {
     dstring reversed = dempty();
     for(int i = input.length - 1; i >= 0; i--) {
-        reversed = dappendc(reversed, input.text[i]);
+        reversed = dappendc(reversed, dtext(input)[i]);
     }
     return reversed;
 }
@@ -60,7 +79,7 @@ dstring dreverse(dstring input) {
 int dcount(dstring input, char character) {
     int occurances = 0;
     for(int i = 0; i < input.length; i++) {
-        if(input.text[i] == character)
+        if(dtext(input)[i] == character)
             occurances++;
     }
 
@@ -70,7 +89,7 @@ int dcount(dstring input, char character) {
 int dindexof(dstring input, char character) {
     int index = -1;
     for(int i = 0; i < input.length; i++) {
-        if(input.text[i] == character) {
+        if(dtext(input)[i] == character) {
             index = i;
             break;
         }
@@ -80,13 +99,12 @@ int dindexof(dstring input, char character) {
 }
 
 dstringa dcreatea() {
-    dstring *empty = malloc(sizeof(dstring));
-    dstringa strings = {0, empty}; 
+    dstringa strings = {0, NULL};
     return strings;
 }
 
 dstringa dpush(dstringa array, dstring input) {
-    dstring new = dcreate(input.text); // Created new object
+    dstring new = dcreate(dtext(input)); // Created new object
     int new_length = array.length + 1;
     dstring *new_array = realloc(array.values, sizeof(dstring) * new_length);
     new_array[array.length] = new;
@@ -108,7 +126,7 @@ int dindexofa(dstringa array, dstring input) {
 dstring djoin(dstringa array, char with) {
     dstring output = dempty();
     for(int i = 0; i < array.length; i++) {
-        output = dappend(output, array.values[i].text);
+        output = dappend(output, dtext(array.values[i]));
         if( i != array.length - 1)
             output = dappendc(output, with);
     }
@@ -144,11 +162,11 @@ dstringa drange(dstringa array, int start, int end) {
 }
 
 dstringa dsplit(dstring input, char at) {
-    dstring new = dcreate(input.text);
+    dstring new = dcreate(dtext(input));
     dstringa array = dcreatea();
     dstring string = dempty();
     for(int i = 0; i < new.length; i++) {
-        char on = new.text[i];
+        char on = dtext(new)[i];
         if(on == at && string.length > 0) {
             array = dpush(array, string);
             string = dempty();
@@ -168,7 +186,7 @@ int dfreea(dstringa array) {
     for(int i = 0; i < array.length; i++) {
         dfree(array.values[i]);
     }
-    
+
     free(array.values);
     return array.length;
 }
@@ -221,7 +239,7 @@ dstringa dset(dstringa array, unsigned int index, dstring with) {
 dstring dsubstr(dstring input, unsigned int start, unsigned int end) {
     if(start > input.length - 1 || end > input.length - 1) {
         return input;
-    } 
+    }
 
     if(end < start) {
         int tmp = end;
@@ -231,7 +249,7 @@ dstring dsubstr(dstring input, unsigned int start, unsigned int end) {
 
     dstring output = dempty();
     for(int i = start; i <= end; i++) {
-        output = dappendc(output, input.text[i]);
+        output = dappendc(output, dtext(input)[i]);
     }
     dfree(input);
     return output;
@@ -239,17 +257,17 @@ dstring dsubstr(dstring input, unsigned int start, unsigned int end) {
 
 dstring dtrim(dstring input) {
     int end_index = input.length - 1;
-    char end_char = input.text[end_index];
+    char end_char = dtext(input)[end_index];
     while((end_char == ' ' || end_char == '\n' || end_char == '\r' || end_char == '\t') && end_index > 0) {
         end_index--;
-        end_char = input.text[end_index];
+        end_char = dtext(input)[end_index];
     }
 
     int start_index = 0;
-    char start_char = input.text[0];
+    char start_char = dtext(input)[0];
     while(start_index < end_index && (start_char == '\n' || start_char == ' ' || start_char == '\t' || start_char == '\r')) {
         start_index++;
-        start_char = input.text[start_index];
+        start_char = dtext(input)[start_index];
     }
 
     dstring output = dsubstr(input, start_index, end_index);
@@ -260,7 +278,7 @@ dstring dtrim(dstring input) {
 dstring dreplace(dstring input, char character, char with) {
     dstring new_string = dempty();
     for(int i = 0; i < input.length; i++) {
-        char on = input.text[i];
+        char on = dtext(input)[i];
         if(on == character) {
             new_string = dappendc(new_string, with);
         } else {
@@ -273,6 +291,7 @@ dstring dreplace(dstring input, char character, char with) {
 }
 
 int dfree(dstring string) {
-    free(string.text);
+    if (string.alloc_len != 0)
+        free(string.text);
     return string.length;
 }

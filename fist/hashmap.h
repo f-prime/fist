@@ -16,6 +16,7 @@ typedef struct hashmap {
 } hashmap;
 
 hashmap *hcreate();
+void hfree(hashmap *hm);
 hashmap *hset(hashmap *hm, dstring key, dstring value);
 dstringa hget(hashmap *hm, dstring key);
 

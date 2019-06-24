@@ -23,14 +23,14 @@
 #define INVALID_COMMAND "Invalid Command\n"
 #define BYE "Bye\n"
 
-hashmap * handle_connection(int new_socket, hashmap *hm) {  
+hashmap * handle_connection(int new_socket, hashmap *hm) {
     while(1) {
         dstring req = dempty();
         while(dindexof(req, '\n') == -1 || dindexof(req, '\r') == -1) {
             char buffer[1025]; // Need to preserve the last character being a null character
             memset(buffer, 0, 1025);
             int reqsize = recv(new_socket, buffer, 1024, 0); // Only fill 1024 of the 1025 bytes
-            if(reqsize == 0) 
+            if(reqsize == 0)
                 break;
             req = dappend(req, buffer);
         }
@@ -39,19 +39,19 @@ hashmap * handle_connection(int new_socket, hashmap *hm) {
 
         dstring trimmed = dtrim(req);
         dstringa commands = dsplit(trimmed, ' ');
-        printf("%d '%s'\n", req.length, trimmed.text);
+        printf("%d '%s'\n", req.length, dtext(trimmed));
         if(dequals(trimmed, dcreate(EXIT))) {
             send(new_socket, BYE, strlen(BYE), 0);
             break;
         }
-        if(dequals(commands.values[0], dcreate(INDEX))) { 
+        if(dequals(commands.values[0], dcreate(INDEX))) {
             printf("INDEX\n");
             if(commands.length < 3) {
-                send(new_socket, TOO_FEW_ARGUMENTS, strlen(TOO_FEW_ARGUMENTS), 0); 
+                send(new_socket, TOO_FEW_ARGUMENTS, strlen(TOO_FEW_ARGUMENTS), 0);
             } else {
                 dstring document = commands.values[1];
                 dstring text = djoin(drange(commands, 2, commands.length), ' ');
-                printf("TEXT: '%s'\n", text.text);
+                printf("TEXT: '%s'\n", dtext(text));
                 dstringa index = indexer(text, 10);
                 printf("INDEX SIZE: %d\n", index.length);
                 for(int i = 0; i < index.length; i++) {
@@ -66,7 +66,7 @@ hashmap * handle_connection(int new_socket, hashmap *hm) {
                 send(new_socket, TOO_FEW_ARGUMENTS, strlen(TOO_FEW_ARGUMENTS), 0);
             } else {
                 dstring text = djoin(drange(commands, 1, commands.length), ' ');
-                printf("SEARCH STRING: '%s'\n", text.text);
+                printf("SEARCH STRING: '%s'\n", dtext(text));
                 dstringa value = hget(hm, text);
                 printf("SEARCH RESULTS SIZE: %d\n", value.length);
                 if(!value.length) {
@@ -83,11 +83,11 @@ hashmap * handle_connection(int new_socket, hashmap *hm) {
                     }
                     output = dappendc(output, ']');
                     output = dappendc(output, '\n');
-                    send(new_socket, output.text, output.length, 0);
+                    send(new_socket, dtext(output), output.length, 0);
                 }
             }
         } else {
-            send(new_socket, INVALID_COMMAND, strlen(INVALID_COMMAND), 0); 
+            send(new_socket, INVALID_COMMAND, strlen(INVALID_COMMAND), 0);
         }
     }
     close(new_socket);
@@ -109,7 +109,7 @@ void start_server(char *host, int port) {
        perror("Problem setting sockopts");
        exit(EXIT_FAILURE);
     }
-    
+
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(port);
@@ -124,7 +124,7 @@ void start_server(char *host, int port) {
         exit(EXIT_FAILURE);
     }
 
-    printf("Fist started at localhost:%d\n", port); 
+    printf("Fist started at localhost:%d\n", port);
 
     hashmap *hm = sload(); // Loads database file if it exists, otherwise returns an empty hashmap
 

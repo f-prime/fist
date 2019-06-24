@@ -1,15 +1,23 @@
 #ifndef H_DSTRING
 #define H_DSTRING
 
+// Size of a small word that we want to keep on the stack to avoid multiple alloc/realloc calls.
+// Increasing this will reduce malloc overhead, improve cache hits, but increase memory wasatage.
+#define DSTRING_SMALL 32
+
 typedef struct dstring {
     int length;
     char *text;
+	int alloc_len;
+    char static_text[DSTRING_SMALL];
 } dstring;
 
 typedef struct dstringa {
     int length;
     dstring *values;
 } dstringa;
+
+#define dtext(_input) (!(_input).alloc_len ? (_input).static_text : (_input).text)
 
 int dequals(dstring s1, dstring s2);
 dstring dappendc(dstring input, char character); // Apppend single char to string
@@ -25,7 +33,7 @@ int dcount(dstring input, char character); // Count occurances of a character in
 int dfree(dstring string); // Frees a dstring's memory
 dstring dappendd(dstring input, dstring word); // Append two dstrings together
 
-// List of dstrings 
+// List of dstrings
 
 dstringa dsplit(dstring input, char at); // Splits string at character
 dstringa dcreatea(); // Create empty array of dstrings
