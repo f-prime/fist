@@ -69,6 +69,12 @@ docker run -d --init --rm -p 5575:5575 -v /var/local/lib/fist fist
 - Persisting data to disk
 - Accessible over TCP connection
 
+# Client Libraries
+
+### NodeJS
+
+- [node-fist](https://github.com/00-matt/node-fist)
+
 # Contributors
 
 - [@AndreRenaud](https://github.com/AndreRenaud)
