@@ -1,11 +1,11 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include "minunit.h"
 #include "dstring.h"
 #include "hashmap.h"
 #include "indexer.h"
+#include "minunit.h"
 #include "serializer.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 int tests_run = 0;
 
@@ -100,12 +100,16 @@ static char *test_push_array_dstring() {
     dstringa array = dcreatea();
     array = dpush(array, test_val);
     mu_assert("dpush: Pushing first value length", array.length == 1);
-    mu_assert("dpush: Pushing first value check val", !strcmp(dtext(array.values[0]), dtext(test_val)));
+    mu_assert("dpush: Pushing first value check val",
+              !strcmp(dtext(array.values[0]), dtext(test_val)));
     array = dpush(array, test_val_2);
     mu_assert("dpush: Pushing second value length", array.length == 2);
-    mu_assert("dpush: Pushing second value check val", !strcmp(dtext(array.values[1]), dtext(test_val_2)));
+    mu_assert("dpush: Pushing second value check val",
+              !strcmp(dtext(array.values[1]), dtext(test_val_2)));
 
-    mu_assert("dpush: Check first and second val", !strcmp(dtext(array.values[0]), dtext(test_val)) && !strcmp(dtext(array.values[1]), dtext(test_val_2)));
+    mu_assert("dpush: Check first and second val",
+              !strcmp(dtext(array.values[0]), dtext(test_val)) &&
+                  !strcmp(dtext(array.values[1]), dtext(test_val_2)));
 
     dfreea(array);
     dfree(test_val);
@@ -267,18 +271,19 @@ static char *test_indexer() {
     answers = dpush(answers, dcreate("This is very"));
     answers = dpush(answers, dcreate("is very cool"));
     answers = dpush(answers, dcreate("This is very cool"));
-    //dstring t2 = dcreate("1 2 3 4 5 6 7 8 9 10 11 12 13");
-    //indexer(t2, 10);
+    // dstring t2 = dcreate("1 2 3 4 5 6 7 8 9 10 11 12 13");
+    // indexer(t2, 10);
     dstringa index = indexer(test, 10);
 
     for(int i = 0; i < answers.length; i++) {
         char *buffer = malloc(sizeof(char) * 1024);
-        sprintf(buffer, "indexer: Expecting '%s' got '%s' at %d", dtext(answers.values[i]), dtext(index.values[i]), i);
+        sprintf(buffer, "indexer: Expecting '%s' got '%s' at %d", dtext(answers.values[i]),
+                dtext(index.values[i]), i);
         mu_assert(buffer, dequals(answers.values[i], index.values[i]));
         free(buffer);
     }
     dfreea(answers);
-    //dfree(t2);
+    // dfree(t2);
     dfreea(index);
     return 0;
 }

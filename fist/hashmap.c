@@ -1,15 +1,15 @@
+#include "hashmap.h"
+#include "dstring.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "dstring.h"
-#include "hashmap.h"
 
 #define HMAP_SIZE 1000081
 
 int hash(char *val) {
     int sum = 0;
     for(int x = 0; x < strlen(val); x++) {
-        sum += (int) val[x];
+        sum += (int)val[x];
     }
     return sum % HMAP_SIZE;
 }
@@ -19,12 +19,11 @@ hashmap *hcreate() {
     return hm;
 }
 
-void hfree(hashmap *hm)
-{
+void hfree(hashmap *hm) {
     // TODO: Free every key
-    for (int i = 0 ; i < HMAP_SIZE; i++) {
+    for(int i = 0; i < HMAP_SIZE; i++) {
         hashmap *map_array = &hm[i];
-        for (int j = 0; j < map_array->length; j++) {
+        for(int j = 0; j < map_array->length; j++) {
             dfree(map_array->maps[j].key);
             dfreea(map_array->maps[j].values);
         }
@@ -43,7 +42,7 @@ hashmap *hset(hashmap *hm, dstring key, dstring value) {
         map_array->maps[0].key = key;
         map_array->maps[0].values = dpush(dcreatea(), value);
         map_array->length++;
-        //hm[hash_val] = map_array;
+        // hm[hash_val] = map_array;
     } else {
         int index = -1;
         for(int i = 0; i < length; i++) {
@@ -61,7 +60,7 @@ hashmap *hset(hashmap *hm, dstring key, dstring value) {
             keyval new_keyval = {key, values};
             map_array->maps[length] = new_keyval;
             map_array->length++;
-            //hm[hash_val] = map_array;
+            // hm[hash_val] = map_array;
         } else { // Element in array
             dstringa values = map_array->maps[index].values;
             if(dindexofa(values, value) == -1) {
@@ -72,7 +71,6 @@ hashmap *hset(hashmap *hm, dstring key, dstring value) {
 
     return hm;
 }
-
 
 dstringa hget(hashmap *hm, dstring key) {
     int hash_val = hash(dtext(key));

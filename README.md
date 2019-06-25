@@ -68,3 +68,9 @@ docker run -d --init --rm -p 5575:5575 -v /var/local/lib/fist fist
 - Full text indexing and searching
 - Persisting data to disk
 - Accessible over TCP connection
+
+# Contributors
+
+- [@AndreRenaud](https://github.com/AndreRenaud)
+- [@00-matt](https://github.com/00-matt)
+- [@io-ma](https://github.com/io-ma)

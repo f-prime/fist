@@ -1,7 +1,7 @@
-#include <string.h>
-#include <stdio.h>
 #include "dstring.h"
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int dequals(dstring s1, dstring s2) {
     return !strcmp(dtext(s1), dtext(s2));
@@ -10,8 +10,8 @@ int dequals(dstring s1, dstring s2) {
 dstring dappendc(dstring input, char character) {
     int new_size = input.length + 2;
     char *string;
-    if (input.alloc_len == 0) {
-        if (new_size <= DSTRING_SMALL) {
+    if(input.alloc_len == 0) {
+        if(new_size <= DSTRING_SMALL) {
             string = input.static_text;
         } else {
             string = malloc(sizeof(char) * new_size);
@@ -35,8 +35,8 @@ dstring dappend(dstring input, char *characters) {
     int new_size = strlen(dtext(input)) + increase_by;
     char *new_dstring = NULL;
 
-    if (input.alloc_len == 0) {
-        if (new_size <= DSTRING_SMALL) {
+    if(input.alloc_len == 0) {
+        if(new_size <= DSTRING_SMALL) {
             new_dstring = input.static_text;
         } else {
             new_dstring = malloc(sizeof(char) * new_size);
@@ -127,7 +127,7 @@ dstring djoin(dstringa array, char with) {
     dstring output = dempty();
     for(int i = 0; i < array.length; i++) {
         output = dappend(output, dtext(array.values[i]));
-        if( i != array.length - 1)
+        if(i != array.length - 1)
             output = dappendc(output, with);
     }
 
@@ -214,7 +214,6 @@ dstringa dremove(dstringa array, dstring input) {
     }
     dfreea(array);
     return new_array;
-
 }
 
 dstringa dset(dstringa array, unsigned int index, dstring with) {
@@ -258,14 +257,16 @@ dstring dsubstr(dstring input, unsigned int start, unsigned int end) {
 dstring dtrim(dstring input) {
     int end_index = input.length - 1;
     char end_char = dtext(input)[end_index];
-    while((end_char == ' ' || end_char == '\n' || end_char == '\r' || end_char == '\t') && end_index > 0) {
+    while((end_char == ' ' || end_char == '\n' || end_char == '\r' || end_char == '\t') &&
+          end_index > 0) {
         end_index--;
         end_char = dtext(input)[end_index];
     }
 
     int start_index = 0;
     char start_char = dtext(input)[0];
-    while(start_index < end_index && (start_char == '\n' || start_char == ' ' || start_char == '\t' || start_char == '\r')) {
+    while(start_index < end_index &&
+          (start_char == '\n' || start_char == ' ' || start_char == '\t' || start_char == '\r')) {
         start_index++;
         start_char = dtext(input)[start_index];
     }
@@ -291,7 +292,7 @@ dstring dreplace(dstring input, char character, char with) {
 }
 
 int dfree(dstring string) {
-    if (string.alloc_len != 0)
+    if(string.alloc_len != 0)
         free(string.text);
     return string.length;
 }

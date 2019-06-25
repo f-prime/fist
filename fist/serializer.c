@@ -1,8 +1,8 @@
-#include "stdlib.h"
-#include "stdio.h"
-#include "hashmap.h"
-#include "dstring.h"
 #include "serializer.h"
+#include "dstring.h"
+#include "hashmap.h"
+#include "stdio.h"
+#include "stdlib.h"
 
 void sdump(hashmap *hmap) {
     // Write size of hashmap to file. (# keys)
@@ -61,20 +61,20 @@ hashmap *sload() {
             fread(key, key_size, 1, db);
             int num_vals;
             fread(&num_vals, sizeof(num_vals), 1, db);
-            //printf("%d %d %s %d\n", num_keys, key_size, key, num_vals);
+            // printf("%d %d %s %d\n", num_keys, key_size, key, num_vals);
             for(int j = 0; j < num_vals; j++) {
                 int val_size;
                 fread(&val_size, sizeof(val_size), 1, db);
                 char value[val_size + 1];
                 value[val_size] = 0;
                 fread(value, val_size, 1, db);
-                //printf("%d %s\n", val_size, value);
+                // printf("%d %s\n", val_size, value);
                 hmap = hset(hmap, dcreate(key), dcreate(value));
             }
         }
 
         printf("Database file has been loaded. Previous state restored.\n");
-	fclose(db);
+        fclose(db);
     } else {
         printf("No previous state found. Creating new database file.\n");
     }

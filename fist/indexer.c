@@ -1,9 +1,9 @@
+#include "indexer.h"
+#include "dstring.h"
+#include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "dstring.h"
-#include "indexer.h"
-#include "utils.h"
 
 dstringa indexer(dstring text, int max_phrase_length) {
     dstringa words = dsplit(text, ' ');
@@ -11,7 +11,7 @@ dstringa indexer(dstring text, int max_phrase_length) {
 
     int max_length = min(max_phrase_length, words.length);
 
-    for(int text_size = 0; text_size < words.length; text_size += max_phrase_length)  {
+    for(int text_size = 0; text_size < words.length; text_size += max_phrase_length) {
         for(int ahead = 0; ahead < max_length; ahead++) {
             for(int i = text_size; i < max_length + text_size; i++) {
                 int check_len = max_length + text_size;
