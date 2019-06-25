@@ -50,6 +50,19 @@ EXIT
 Bye
 ```
 
+# Docker Usage
+
+```
+# Build image
+docker build . -t fist:latest
+
+# Run tests
+docker run --rm -it fist test
+
+# Run server and make volume for database
+docker run -d --init --rm -p 5575:5575 -v /var/local/lib/fist fist
+```
+
 # Key Features
 
 - Full text indexing and searching
