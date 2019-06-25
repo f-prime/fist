@@ -182,7 +182,6 @@ int start_server(char *host, int port) {
   fd_max = server_fd;
 
   while (running) {
-    char buf[READ_MAX];
     int i;
 
     if (should_save) {
