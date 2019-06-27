@@ -9,7 +9,7 @@ dstringa indexer(dstring text, int max_phrase_length) {
     dstringa words = dsplit(text, ' ');
     dstringa index = dcreatea();
 
-    int max_length = min(max_phrase_length, words.length);
+    int max_length = MIN(max_phrase_length, words.length);
 
     for(int text_size = 0; text_size < words.length; text_size += max_phrase_length) {
         for(int ahead = 0; ahead < max_length; ahead++) {
