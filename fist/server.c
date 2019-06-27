@@ -12,9 +12,9 @@
 #include "dstring.h"
 #include "hashmap.h"
 #include "indexer.h"
-#include "max.h"
 #include "serializer.h"
 #include "server.h"
+#include "utils.h"
 
 // TODO: extract to config file?
 #define MAX_PHRASE_LENGTH 10
