@@ -15,7 +15,7 @@ int hash(char *val) {
 }
 
 hashmap *hcreate() {
-    hashmap *hm = calloc(sizeof(hashmap), HMAP_SIZE);
+    hashmap *hm = calloc(HMAP_SIZE, sizeof(hashmap));
     return hm;
 }
 
