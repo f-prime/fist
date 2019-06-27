@@ -9,8 +9,7 @@ BIN_SOURCES := \
 	fist/indexer.c \
 	fist/serializer.c \
 	fist/server.c \
-	fist/tests.c \
-	fist/utils.c
+	fist/tests.c
 BIN_OBJECTS := $(BIN_SOURCES:=.o)
 BIN_DEPS := $(BIN_SOURCES:=.d)
 
