@@ -2,13 +2,13 @@
 #define H_DSTRING
 
 // Size of a small word that we want to keep on the stack to avoid multiple alloc/realloc calls.
-// Increasing this will reduce malloc overhead, improve cache hits, but increase memory wasatage.
+// Increasing this will reduce malloc overhead, improve cache hits, but increase memory wastage.
 #define DSTRING_SMALL 32
 
 typedef struct dstring {
     int length;
     char *text;
-	int alloc_len;
+    int alloc_len;
     char static_text[DSTRING_SMALL];
 } dstring;
 
