@@ -4,6 +4,7 @@
 #include <netinet/in.h>
 #include <signal.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/select.h>
 #include <sys/socket.h>
@@ -38,12 +39,14 @@ static int dirty = 0;
 static volatile int running = 1;
 static volatile int should_save = 0;
 
-static int process_command(hashmap *hm, int fd, char *buf, size_t nbytes) {
+struct connection_info {
+    dstring last_command;
+};
+
+static int process_command(hashmap *hm, int fd, dstring req) {
     dstringa commands;
-    dstring req;
     dstring trimmed;
 
-    req = dappend(dempty(), buf);
     trimmed = dtrim(req);
     commands = dsplit(trimmed, ' ');
     printf("%d '%s'\n", req.length, dtext(trimmed));
@@ -134,12 +137,18 @@ static void install_sighandlers(void) {
 int start_server(char *host, int port) {
     char buf[READ_MAX];
     struct sockaddr_in client_addr;
+    struct connection_info *connection_infos;
+    int dtablesize;
     int fd_max;
     hashmap *hm;
     fd_set master_fds;
     fd_set copy_fds;
+    int rc = 0;
     struct sockaddr_in server_addr;
     int server_fd;
+
+    dtablesize = getdtablesize();
+    connection_infos = calloc(dtablesize, sizeof(struct connection_info));
 
     install_sighandlers();
 
@@ -153,12 +162,14 @@ int start_server(char *host, int port) {
 
     if((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
         perror("socket");
-        return -1;
+        rc = -1;
+	goto exit;
     }
 
     if(setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &YES, sizeof(int)) == -1) {
         perror("setsockopt");
-        return -1;
+	rc = -1;
+	goto exit;
     }
 
     // TODO: respect host parameter
@@ -167,12 +178,14 @@ int start_server(char *host, int port) {
     server_addr.sin_port = htons(port);
     if(bind(server_fd, (struct sockaddr *)&server_addr, sizeof(struct sockaddr_in)) == -1) {
         perror("bind");
-        return -1;
+        rc = -1;
+	goto exit;
     }
 
     if(listen(server_fd, SO_BACKLOG) == -1) {
         perror("listen");
-        return -1;
+        rc = -1;
+	goto exit;
     }
 
     printf("Fist started at localhost:%d\n", port);
@@ -212,6 +225,7 @@ int start_server(char *host, int port) {
                     }
                     FD_SET(new_fd, &master_fds);
                     fd_max = MAX(new_fd, fd_max);
+		    connection_infos[new_fd].last_command = dempty();
                 } else {
                     // -1 to preserve final NULL
                     int nbytes = recv(i, buf, READ_MAX - 1, 0);
@@ -222,11 +236,23 @@ int start_server(char *host, int port) {
                         }
                         close(i);
                         FD_CLR(i, &master_fds);
+			dfree(connection_infos[i].last_command);
                     } else {
-                        int should_close = process_command(hm, i, buf, nbytes);
+			struct connection_info *this = &connection_infos[i];
+			this->last_command = dappend(this->last_command, buf);
+
+			if (dindexof(this->last_command, '\n') == -1
+			    || dindexof(this->last_command, '\r') == -1) {
+			    continue;
+			}
+
+			int should_close = process_command(hm, i, this->last_command);
+			dfree(this->last_command);
+			this->last_command = dempty();
                         if(should_close) {
                             close(i);
                             FD_CLR(i, &master_fds);
+			    dfree(connection_infos[i].last_command);
                         }
                     }
                 }
@@ -234,6 +260,8 @@ int start_server(char *host, int port) {
         }
     }
     sdump(hm);
+exit:
+    free(connection_infos);
     puts("Exiting cleanly...");
-    return 0;
+    return rc;
 }
