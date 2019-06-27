@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "utils.h"
+
 int dequals(dstring s1, dstring s2) {
     return !strcmp(dtext(s1), dtext(s2));
 }
@@ -295,4 +297,15 @@ int dfree(dstring string) {
     if(string.alloc_len != 0)
         free(string.text);
     return string.length;
+}
+
+static int cmpdstringp(const void *pa, const void *pb) {
+    const dstring a = *(const dstring *) pa;
+    const dstring b = *(const dstring *) pb;
+    return strncmp(dtext(a), dtext(b), MIN(a.length, b.length));
+}
+
+dstringa dsorta(dstringa array) {
+    qsort(array.values, array.length, sizeof(dstring), cmpdstringp);
+    return array;
 }
