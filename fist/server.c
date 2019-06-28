@@ -217,7 +217,7 @@ int start_server(struct config *config) {
         goto exit;
     }
 
-    printf("Fist started at %s:%d\n", config->host, config->port);
+    printf("Fist started at %s:%d\n", inet_ntoa(server_addr.sin_addr), config->port);
 
     FD_SET(server_fd, &master_fds);
     fd_max = server_fd;
