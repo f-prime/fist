@@ -1,5 +1,6 @@
 #include "server.h"
 
+#include <arpa/inet.h>
 #include <errno.h>
 #include <netinet/in.h>
 #include <signal.h>
@@ -188,7 +189,7 @@ int start_server(char *host, int port) {
 	goto exit;
     }
 
-    printf("Fist started at localhost:%d\n", port);
+    printf("Fist started at %s:%d\n", inet_ntoa(server_addr.sin_addr), port);
 
     FD_SET(server_fd, &master_fds);
     fd_max = server_fd;
