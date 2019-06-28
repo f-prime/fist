@@ -1,5 +1,6 @@
 #include "server.h"
 
+#include <arpa/inet.h>
 #include <errno.h>
 #include <netinet/in.h>
 #include <signal.h>
@@ -198,6 +199,11 @@ int start_server(struct config *config) {
     // TODO: respect host parameter
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = INADDR_ANY;
+    if(!inet_aton(config->host, &server_addr.sin_addr)) {
+        perror("inet_aton");
+        rc = -1;
+        goto exit;
+    }
     server_addr.sin_port = htons(config->port);
     if(bind(server_fd, (struct sockaddr *)&server_addr, sizeof(struct sockaddr_in)) == -1) {
         perror("bind");
