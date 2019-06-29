@@ -258,15 +258,15 @@ int start_server(char *host, int port) {
                                 found_bs_r = 0;
                             }
 
+                            command = dappendc(command, on);
+
                             if(found_bs_r && on == '\n') {
                                 process_command(hm, i, command);
                                 dfree(command);
                                 command = dempty();
-                            } else {
-                                command = dappendc(command, on);
                             }
                         }
-                        
+                        printf("LEFTOVER: %s\n", dtext(command)); 
                         int should_close = process_command(hm, i, command);
                         dfree(this->last_command);
                         this->last_command = dempty();
