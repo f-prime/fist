@@ -275,6 +275,9 @@ static char *test_indexer() {
     // indexer(t2, 10);
     dstringa index = indexer(test, 10);
 
+    answers = dsorta(answers);
+    index = dsorta(index);
+
     for(int i = 0; i < answers.length; i++) {
         char *buffer = malloc(sizeof(char) * 1024);
         sprintf(buffer, "indexer: Expecting '%s' got '%s' at %d", dtext(answers.values[i]),

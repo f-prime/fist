@@ -40,6 +40,7 @@ dstringa dcreatea(); // Create empty array of dstrings
 dstringa dpush(dstringa array, dstring input); // Push dstring to list of dstrings
 dstringa dremove(dstringa array, dstring input); // Remove item from dstring array
 dstringa dpop(dstringa array); // Pop from stack
+dstringa dsorta(dstringa array); // sort an array of dstrings
 int dindexofa(dstringa array, dstring input); // Find index of dstring
 dstringa dset(dstringa array, unsigned int index, dstring with); // Replace index in dstring array with another dstring
 dstringa drange(dstringa array, int start, int end); // Return new array between two ranges
