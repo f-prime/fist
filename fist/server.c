@@ -246,8 +246,28 @@ int start_server(char *host, int port) {
                            dindexof(this->last_command, '\r') == -1) {
                             continue;
                         }
+                        
+                        int found_bs_r = 0;
+                        dstring command = dempty();
+                        
+                        for(int j = 0; j < this->last_command.length; j++) {
+                            char on = dtext(this->last_command)[j];
+                            if(on == '\r') {
+                                found_bs_r = 1;
+                            } else {
+                                found_bs_r = 0;
+                            }
 
-                        int should_close = process_command(hm, i, this->last_command);
+                            if(found_bs_r && on == '\n') {
+                                process_command(hm, i, command);
+                                dfree(command);
+                                command = dempty();
+                            } else {
+                                command = dappendc(command, on);
+                            }
+                        }
+                        
+                        int should_close = process_command(hm, i, command);
                         dfree(this->last_command);
                         this->last_command = dempty();
                         if(should_close) {
