@@ -271,7 +271,7 @@ static char *test_indexer() {
     answers = dpush(answers, dcreate("This is very"));
     answers = dpush(answers, dcreate("is very cool"));
     answers = dpush(answers, dcreate("This is very cool"));
-    
+
     dstringa index = indexer(test, 10);
 
     answers = dsorta(answers);
@@ -285,10 +285,10 @@ static char *test_indexer() {
                 break;
             }
         }
-        
+
         char *buffer = malloc(sizeof(char) * 1024);
         sprintf(buffer, "%s not in index", dtext(answers.values[i]));
-        mu_assert(buffer, found);    
+        mu_assert(buffer, found);
         free(buffer);
     }
     dfreea(answers);

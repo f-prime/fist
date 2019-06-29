@@ -300,8 +300,8 @@ int dfree(dstring string) {
 }
 
 static int cmpdstringp(const void *pa, const void *pb) {
-    const dstring a = *(const dstring *) pa;
-    const dstring b = *(const dstring *) pb;
+    const dstring a = *(const dstring *)pa;
+    const dstring b = *(const dstring *)pb;
     return strncmp(dtext(a), dtext(b), MIN(a.length, b.length));
 }
 

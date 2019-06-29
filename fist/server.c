@@ -39,7 +39,8 @@ static int dirty = 0;
 static volatile int running = 1;
 static volatile int should_save = 0;
 
-struct connection_info {
+struct connection_info
+{
     dstring last_command;
 };
 
@@ -163,13 +164,13 @@ int start_server(char *host, int port) {
     if((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
         perror("socket");
         rc = -1;
-	goto exit;
+        goto exit;
     }
 
     if(setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &YES, sizeof(int)) == -1) {
         perror("setsockopt");
-	rc = -1;
-	goto exit;
+        rc = -1;
+        goto exit;
     }
 
     // TODO: respect host parameter
@@ -179,13 +180,13 @@ int start_server(char *host, int port) {
     if(bind(server_fd, (struct sockaddr *)&server_addr, sizeof(struct sockaddr_in)) == -1) {
         perror("bind");
         rc = -1;
-	goto exit;
+        goto exit;
     }
 
     if(listen(server_fd, SO_BACKLOG) == -1) {
         perror("listen");
         rc = -1;
-	goto exit;
+        goto exit;
     }
 
     printf("Fist started at localhost:%d\n", port);
@@ -225,7 +226,7 @@ int start_server(char *host, int port) {
                     }
                     FD_SET(new_fd, &master_fds);
                     fd_max = MAX(new_fd, fd_max);
-		    connection_infos[new_fd].last_command = dempty();
+                    connection_infos[new_fd].last_command = dempty();
                 } else {
                     // -1 to preserve final NULL
                     int nbytes = recv(i, buf, READ_MAX - 1, 0);
@@ -236,23 +237,23 @@ int start_server(char *host, int port) {
                         }
                         close(i);
                         FD_CLR(i, &master_fds);
-			dfree(connection_infos[i].last_command);
+                        dfree(connection_infos[i].last_command);
                     } else {
-			struct connection_info *this = &connection_infos[i];
-			this->last_command = dappend(this->last_command, buf);
+                        struct connection_info *this = &connection_infos[i];
+                        this->last_command = dappend(this->last_command, buf);
 
-			if (dindexof(this->last_command, '\n') == -1
-			    || dindexof(this->last_command, '\r') == -1) {
-			    continue;
-			}
+                        if(dindexof(this->last_command, '\n') == -1 ||
+                           dindexof(this->last_command, '\r') == -1) {
+                            continue;
+                        }
 
-			int should_close = process_command(hm, i, this->last_command);
-			dfree(this->last_command);
-			this->last_command = dempty();
+                        int should_close = process_command(hm, i, this->last_command);
+                        dfree(this->last_command);
+                        this->last_command = dempty();
                         if(should_close) {
                             close(i);
                             FD_CLR(i, &master_fds);
-			    dfree(connection_infos[i].last_command);
+                            dfree(connection_infos[i].last_command);
                         }
                     }
                 }
