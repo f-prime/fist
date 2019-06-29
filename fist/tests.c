@@ -271,22 +271,27 @@ static char *test_indexer() {
     answers = dpush(answers, dcreate("This is very"));
     answers = dpush(answers, dcreate("is very cool"));
     answers = dpush(answers, dcreate("This is very cool"));
-    // dstring t2 = dcreate("1 2 3 4 5 6 7 8 9 10 11 12 13");
-    // indexer(t2, 10);
+    
     dstringa index = indexer(test, 10);
 
     answers = dsorta(answers);
     index = dsorta(index);
 
     for(int i = 0; i < answers.length; i++) {
+        int found = 0;
+        for(int j = 0; j < index.length; j++) {
+            if(dequals(answers.values[i], index.values[j])) {
+                found = 1;
+                break;
+            }
+        }
+        
         char *buffer = malloc(sizeof(char) * 1024);
-        sprintf(buffer, "indexer: Expecting '%s' got '%s' at %d", dtext(answers.values[i]),
-                dtext(index.values[i]), i);
-        mu_assert(buffer, dequals(answers.values[i], index.values[i]));
+        sprintf(buffer, "%s not in index", dtext(answers.values[i]));
+        mu_assert(buffer, found);    
         free(buffer);
     }
     dfreea(answers);
-    // dfree(t2);
     dfreea(index);
     return 0;
 }
