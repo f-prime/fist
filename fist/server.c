@@ -245,7 +245,7 @@ int start_server(char *host, int port) {
                         for(int j = 0; j < nbytes; j++) {
                             char on = buf[j];
                             this->last_command = dappendc(this->last_command, on);
-                            if (on == '\r') {
+                            if(on == '\r') {
                                 found_bs_r = 1;
                             } else if(on == '\n' && found_bs_r) {
                                 int should_close = process_command(hm, i, this->last_command);
