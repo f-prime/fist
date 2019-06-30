@@ -77,6 +77,10 @@ docker run -d --init --rm -p 5575:5575 -v /var/local/lib/fist fist
 
 - [node-fist](https://github.com/00-matt/node-fist)
 
+### Python
+
+- [fistpy](https://github.com/puria/fistpy)
+
 # Contributors
 
 - [@AndreRenaud](https://github.com/AndreRenaud)
