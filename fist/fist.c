@@ -6,8 +6,7 @@
 #include "indexer.h"
 #include "server.h"
 #include "tests.h"
-
-#define VERSION "0.0.1"
+#include "version.h"
 
 int main(int argc, char *argv[]) {
     if(argc == 2) {

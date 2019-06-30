@@ -17,6 +17,7 @@
 #include "serializer.h"
 #include "server.h"
 #include "utils.h"
+#include "version.h"
 
 // TODO: extract to config file?
 #define MAX_PHRASE_LENGTH 10
@@ -98,7 +99,9 @@ static int do_search(hashmap *hm, int fd, dstringa params) {
 }
 
 static int do_version(hashmap *hm, int fd, dstringa params) {
-    send(fd, "Not implemented\n", 16, 0);
+    dstring output = dcreate(VERSION);
+    output = dappendc(output, '\n');
+    send(fd, dtext(output), output.length, 0);
     return 0;
 }
 
