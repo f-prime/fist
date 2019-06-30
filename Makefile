@@ -3,6 +3,7 @@ MAKEFLAGS += -r
 BINDIR := bin
 BIN := $(BINDIR)/fist
 BIN_SOURCES := \
+	fist/bst.c \
 	fist/dstring.c \
 	fist/fist.c \
 	fist/hashmap.c \
