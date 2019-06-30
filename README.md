@@ -4,6 +4,8 @@
 [![Patreon](https://img.shields.io/badge/Patreon-Help%20fund%20this%20project-RED.svg)](https://www.patreon.com/fistproject)
 [![CircleCI](https://circleci.com/gh/f-prime/fist.svg?style=svg)](https://circleci.com/gh/f-prime/fist)
 
+![fist](https://avatars2.githubusercontent.com/u/52340359?s=200&v=4)
+
 Fist is a fast, lightweight, full-text search and index server. Fist stores all information in memory making lookups very fast while also persisting the index to disk. The index can be accessed over a TCP connection and all data returned is valid JSON.
 
 **Fist is still heavily under development. Not all features are implemented or stable yet.**
