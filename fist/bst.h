@@ -8,7 +8,8 @@
 
 typedef int (*command_handler_t)(hashmap *hm, int fd, dstringa params);
 
-struct bst_node {
+struct bst_node
+{
     char key[MAX_COMMAND_LENGTH];
     command_handler_t value;
     struct bst_node *left;
@@ -23,4 +24,4 @@ void bst_insert(struct bst_node **root, const char *key, command_handler_t value
 
 command_handler_t bst_search(struct bst_node *root, const char *key);
 
-#endif//BST_H
+#endif // BST_H

@@ -54,17 +54,17 @@ static int do_exit(hashmap *hm, int fd, dstringa params) {
 }
 
 static int do_index(hashmap *hm, int fd, dstringa params) {
-    if (params.length < 3) {
-	send(fd, TOO_FEW_ARGUMENTS, strlen(TOO_FEW_ARGUMENTS), 0);
-	return 0;
+    if(params.length < 3) {
+        send(fd, TOO_FEW_ARGUMENTS, strlen(TOO_FEW_ARGUMENTS), 0);
+        return 0;
     }
     dstring document = params.values[1];
     dstring text = djoin(drange(params, 2, params.length), ' ');
     dstringa index = indexer(text, MAX_PHRASE_LENGTH);
     printf("INDEX SIZE: %d\n", index.length);
-    for (int i = 0; i < index.length; i++) {
-	dstring on = index.values[i];
-	hm = hset(hm, on, document);
+    for(int i = 0; i < index.length; i++) {
+        dstring on = index.values[i];
+        hm = hset(hm, on, document);
     }
     dirty = 1;
     send(fd, INDEXED, strlen(INDEXED), 0);
@@ -72,25 +72,25 @@ static int do_index(hashmap *hm, int fd, dstringa params) {
 }
 
 static int do_search(hashmap *hm, int fd, dstringa params) {
-    if (params.length < 2) {
-	send(fd, TOO_FEW_ARGUMENTS, strlen(TOO_FEW_ARGUMENTS), 0);
-	return 0;
+    if(params.length < 2) {
+        send(fd, TOO_FEW_ARGUMENTS, strlen(TOO_FEW_ARGUMENTS), 0);
+        return 0;
     }
     dstring text = djoin(drange(params, 1, params.length), ' ');
     dstringa value = hget(hm, text);
-    if (value.length == 0) {
-	send(fd, NOT_FOUND, strlen(NOT_FOUND), 0);
-	return 0;
+    if(value.length == 0) {
+        send(fd, NOT_FOUND, strlen(NOT_FOUND), 0);
+        return 0;
     }
     dstring output = dcreate("[");
-    for (int i = 0; i < value.length; i++) {
-	dstring on = value.values[i];
-	output = dappendc(output, '"');
-	output = dappendd(output, on);
-	output = dappendc(output, '"');
-	if (i != value.length - 1) {
-	    output = dappendc(output, ',');
-	}
+    for(int i = 0; i < value.length; i++) {
+        dstring on = value.values[i];
+        output = dappendc(output, '"');
+        output = dappendd(output, on);
+        output = dappendc(output, '"');
+        if(i != value.length - 1) {
+            output = dappendc(output, ',');
+        }
     }
     output = dappendc(output, ']');
     output = dappendc(output, '\n');
@@ -115,9 +115,9 @@ static int process_command(hashmap *hm, int fd, dstring req) {
     printf("%d '%s'\n", req.length, dtext(trimmed));
 
     handler = bst_search(command_tree, dtext(commands.values[0]));
-    if (!handler) {
-	send(fd, INVALID_COMMAND, strlen(INVALID_COMMAND), 0);
-	return 0;
+    if(!handler) {
+        send(fd, INVALID_COMMAND, strlen(INVALID_COMMAND), 0);
+        return 0;
     }
 
     return handler(hm, fd, commands);

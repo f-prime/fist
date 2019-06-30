@@ -6,12 +6,13 @@
 
 #define HMAP_SIZE 1000081
 
-int hash(char *val) {
-    int sum = 0;
+unsigned int hash(char *val) {
+    unsigned long sum = 0;
     for(int x = 0; x < strlen(val); x++) {
-        sum += (int)val[x];
+        sum += (unsigned long)val[x];
     }
-    return sum % HMAP_SIZE;
+
+    return (unsigned int)(sum % HMAP_SIZE);
 }
 
 hashmap *hcreate() {
@@ -34,7 +35,7 @@ void hfree(hashmap *hm) {
 }
 
 hashmap *hset(hashmap *hm, dstring key, dstring value) {
-    int hash_val = hash(dtext(key));
+    unsigned int hash_val = hash(dtext(key));
     hashmap *map_array = &hm[hash_val];
     int length = map_array->length;
     if(length == 0) {
@@ -73,7 +74,7 @@ hashmap *hset(hashmap *hm, dstring key, dstring value) {
 }
 
 dstringa hget(hashmap *hm, dstring key) {
-    int hash_val = hash(dtext(key));
+    unsigned int hash_val = hash(dtext(key));
     hashmap map_array = hm[hash_val];
     int length = map_array.length;
     if(length == 0) {
