@@ -102,6 +102,7 @@ static int process_command(hashmap *hm, int fd, dstring req) {
             }
         }
     } else {
+        printf("INVALID COMMAND: %s\n", dtext(req));
         send(fd, INVALID_COMMAND, strlen(INVALID_COMMAND), 0);
     }
 
@@ -240,20 +241,24 @@ int start_server(char *host, int port) {
                         dfree(connection_infos[i].last_command);
                     } else {
                         struct connection_info *this = &connection_infos[i];
-                        this->last_command = dappend(this->last_command, buf);
-
-                        if(dindexof(this->last_command, '\n') == -1 ||
-                           dindexof(this->last_command, '\r') == -1) {
-                            continue;
-                        }
-
-                        int should_close = process_command(hm, i, this->last_command);
-                        dfree(this->last_command);
-                        this->last_command = dempty();
-                        if(should_close) {
-                            close(i);
-                            FD_CLR(i, &master_fds);
-                            dfree(connection_infos[i].last_command);
+                        int found_bs_r = 0;
+                        for(int j = 0; j < nbytes; j++) {
+                            char on = buf[j];
+                            this->last_command = dappendc(this->last_command, on);
+                            if(on == '\r') {
+                                found_bs_r = 1;
+                            } else if(on == '\n' && found_bs_r) {
+                                int should_close = process_command(hm, i, this->last_command);
+                                this->last_command = dempty();
+                                if(should_close) {
+                                    close(i);
+                                    FD_CLR(i, &master_fds);
+                                    dfree(connection_infos[i].last_command);
+                                    break;
+                                }
+                            } else {
+                                found_bs_r = 0;
+                            }
                         }
                     }
                 }
