@@ -10,12 +10,14 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include "bst.h"
 #include "dstring.h"
 #include "hashmap.h"
 #include "indexer.h"
 #include "serializer.h"
 #include "server.h"
 #include "utils.h"
+#include "version.h"
 
 // TODO: extract to config file?
 #define MAX_PHRASE_LENGTH 10
@@ -29,84 +31,96 @@
 #define NOT_FOUND "[]\n"
 #define TOO_FEW_ARGUMENTS "Too few arguments\n"
 
-#define EXIT "EXIT"
-#define INDEX "INDEX"
-#define SEARCH "SEARCH"
-
 static const int YES = 1;
 
 static int dirty = 0;
 static volatile int running = 1;
 static volatile int should_save = 0;
+static struct bst_node *command_tree;
 
 struct connection_info
 {
     dstring last_command;
 };
 
+static int do_delete(hashmap *hm, int fd, dstringa params) {
+    send(fd, "Not implemented\n", 16, 0);
+    return 0;
+}
+
+static int do_exit(hashmap *hm, int fd, dstringa params) {
+    send(fd, "Bye\n", 4, 0);
+    return 1;
+}
+
+static int do_index(hashmap *hm, int fd, dstringa params) {
+    if (params.length < 3) {
+	send(fd, TOO_FEW_ARGUMENTS, strlen(TOO_FEW_ARGUMENTS), 0);
+	return 0;
+    }
+    dstring document = params.values[1];
+    dstring text = djoin(drange(params, 2, params.length), ' ');
+    dstringa index = indexer(text, MAX_PHRASE_LENGTH);
+    printf("INDEX SIZE: %d\n", index.length);
+    for (int i = 0; i < index.length; i++) {
+	dstring on = index.values[i];
+	hm = hset(hm, on, document);
+    }
+    dirty = 1;
+    send(fd, INDEXED, strlen(INDEXED), 0);
+    return 0;
+}
+
+static int do_search(hashmap *hm, int fd, dstringa params) {
+    if (params.length < 2) {
+	send(fd, TOO_FEW_ARGUMENTS, strlen(TOO_FEW_ARGUMENTS), 0);
+	return 0;
+    }
+    dstring text = djoin(drange(params, 1, params.length), ' ');
+    dstringa value = hget(hm, text);
+    if (value.length == 0) {
+	send(fd, NOT_FOUND, strlen(NOT_FOUND), 0);
+	return 0;
+    }
+    dstring output = dcreate("[");
+    for (int i = 0; i < value.length; i++) {
+	dstring on = value.values[i];
+	output = dappendc(output, '"');
+	output = dappendd(output, on);
+	output = dappendc(output, '"');
+	if (i != value.length - 1) {
+	    output = dappendc(output, ',');
+	}
+    }
+    output = dappendc(output, ']');
+    output = dappendc(output, '\n');
+    send(fd, dtext(output), output.length, 0);
+    return 0;
+}
+
+static int do_version(hashmap *hm, int fd, dstringa params) {
+    dstring output = dcreate(VERSION);
+    output = dappendc(output, '\n');
+    send(fd, dtext(output), output.length, 0);
+    return 0;
+}
+
 static int process_command(hashmap *hm, int fd, dstring req) {
     dstringa commands;
     dstring trimmed;
+    command_handler_t handler;
 
     trimmed = dtrim(req);
     commands = dsplit(trimmed, ' ');
     printf("%d '%s'\n", req.length, dtext(trimmed));
 
-    // TODO: don't allocate new dstrings all the time
-    if(dequals(trimmed, dcreate(EXIT))) {
-        // TODO: don't calculate strlen all the time
-        send(fd, BYE, strlen(BYE), 0);
-        return 1;
-    }
-    if(dequals(commands.values[0], dcreate(INDEX))) {
-        printf("INDEX\n");
-        if(commands.length < 3) {
-            send(fd, TOO_FEW_ARGUMENTS, strlen(TOO_FEW_ARGUMENTS), 0);
-        } else {
-            dstring document = commands.values[1];
-            dstring text = djoin(drange(commands, 2, commands.length), ' ');
-            printf("TEXT: '%s'\n", dtext(text));
-            dstringa index = indexer(text, MAX_PHRASE_LENGTH);
-            printf("INDEX SIZE: %d\n", index.length);
-            for(int i = 0; i < index.length; i++) {
-                dstring on = index.values[i];
-                hm = hset(hm, on, document);
-            }
-            dirty = 1;
-            send(fd, INDEXED, strlen(INDEXED), 0);
-        }
-    } else if(dequals(commands.values[0], dcreate(SEARCH))) {
-        printf("SEARCH\n");
-        if(commands.length < 2) {
-            send(fd, TOO_FEW_ARGUMENTS, strlen(TOO_FEW_ARGUMENTS), 0);
-        } else {
-            dstring text = djoin(drange(commands, 1, commands.length), ' ');
-            printf("SEARCH STRING: '%s'\n", dtext(text));
-            dstringa value = hget(hm, text);
-            printf("SEARCH RESULTS SIZE: %d\n", value.length);
-            if(!value.length) {
-                send(fd, NOT_FOUND, strlen(NOT_FOUND), 0);
-            } else {
-                dstring output = dcreate("[");
-                for(int i = 0; i < value.length; i++) { // This builds the JSON array output
-                    dstring on = value.values[i];
-                    output = dappendc(output, '"');
-                    output = dappendd(output, on);
-                    output = dappendc(output, '"');
-                    if(i != value.length - 1)
-                        output = dappendc(output, ',');
-                }
-                output = dappendc(output, ']');
-                output = dappendc(output, '\n');
-                send(fd, dtext(output), output.length, 0);
-            }
-        }
-    } else {
-        printf("INVALID COMMAND: %s\n", dtext(req));
-        send(fd, INVALID_COMMAND, strlen(INVALID_COMMAND), 0);
+    handler = bst_search(command_tree, dtext(commands.values[0]));
+    if (!handler) {
+	send(fd, INVALID_COMMAND, strlen(INVALID_COMMAND), 0);
+	return 0;
     }
 
-    return 0;
+    return handler(hm, fd, commands);
 }
 
 static void sighandler_alarm(int signum) {
@@ -148,6 +162,14 @@ int start_server(char *host, int port) {
     int rc = 0;
     struct sockaddr_in server_addr;
     int server_fd;
+
+    command_tree = NULL;
+    // not a self balancing tree, be mindful of the order
+    bst_insert(&command_tree, "INDEX", do_index);
+    bst_insert(&command_tree, "EXIT", do_exit);
+    bst_insert(&command_tree, "SEARCH", do_search);
+    bst_insert(&command_tree, "DELETE", do_delete);
+    bst_insert(&command_tree, "VERSION", do_version);
 
     dtablesize = getdtablesize();
     connection_infos = calloc(dtablesize, sizeof(struct connection_info));
@@ -267,6 +289,7 @@ int start_server(char *host, int port) {
     }
     sdump(hm);
 exit:
+    bst_free(command_tree);
     free(connection_infos);
     puts("Exiting cleanly...");
     return rc;
