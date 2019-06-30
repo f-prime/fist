@@ -19,6 +19,7 @@ BIN_HEADER_SOURCES := \
 	fist/indexer.h \
 	fist/serializer.h \
 	fist/server.h \
+	fist/version.h \
 	fist/tests.h
 
 
