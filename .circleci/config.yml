@@ -7,7 +7,10 @@ jobs:
       - checkout
       - run:
           name: Setup build tools
-          command: apk add --no-progress gcc libc-dev make valgrind cppcheck clang
+          command: apk add --no-progress gcc libc-dev make valgrind cppcheck clang clang-format
+      - run:
+          name: Code Format
+          command: "! make check_format 2>&1 | grep -c '@@' > /dev/null"
       - run:
           name: Build
           command: make

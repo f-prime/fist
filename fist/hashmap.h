@@ -5,12 +5,14 @@
 
 #include "dstring.h"
 
-typedef struct keyval {
+typedef struct keyval
+{
     dstring key;
     dstringa values;
 } keyval;
 
-typedef struct hashmap {
+typedef struct hashmap
+{
     int length;
     keyval *maps;
 } hashmap;

@@ -11,6 +11,17 @@ BIN_SOURCES := \
 	fist/serializer.c \
 	fist/server.c \
 	fist/tests.c
+
+BIN_HEADER_SOURCES := \
+	fist/bst.h \
+	fist/dstring.h \
+	fist/hashmap.h \
+	fist/indexer.h \
+	fist/serializer.h \
+	fist/server.h \
+	fist/tests.h
+
+
 BIN_OBJECTS := $(BIN_SOURCES:=.o)
 BIN_DEPS := $(BIN_SOURCES:=.d)
 
@@ -43,9 +54,12 @@ test: $(BIN)
 
 check_format:
 	$(foreach f, $(BIN_SOURCES), $(CLANG_FORMAT) $(f) | $(DIFF) -u $(f) -;)
+	$(foreach f, $(BIN_HEADER_SOURCES), $(CLANG_FORMAT) $(f) | $(DIFF) -u $(f) -;)
 
 format:
 	$(foreach f, $(BIN_SOURCES), $(CLANG_FORMAT) -i $(f);)
+	$(foreach f, $(BIN_HEADER_SOURCES), $(CLANG_FORMAT) -i $(f);)
+
 .PHONY: format check_format
 
 clean:
