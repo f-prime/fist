@@ -1,7 +1,7 @@
-#include "stdint.h"
 #include "serializer.h"
 #include "dstring.h"
 #include "hashmap.h"
+#include "stdint.h"
 #include "stdio.h"
 #include "stdlib.h"
 
@@ -11,7 +11,7 @@ void sdump(hashmap *hmap) {
     FILE *dump = fopen("fist.db", "wb");
 
     uint32_t num_indices = 0;
-    
+
     for(int i = 0; i < HMAP_SIZE; i++) {
         // Get number of indices that have values
         hashmap on = hmap[i];
@@ -62,7 +62,7 @@ hashmap *sload() {
             fread(key, key_size, 1, db);
             uint32_t num_vals;
             fread(&num_vals, sizeof(num_vals), 1, db);
-            
+
             for(int j = 0; j < num_vals; j++) {
                 uint32_t val_size;
                 fread(&val_size, sizeof(val_size), 1, db);
