@@ -254,6 +254,7 @@ int start_server(char *host, int port) {
                                     close(i);
                                     FD_CLR(i, &master_fds);
                                     dfree(connection_infos[i].last_command);
+                                    break;
                                 }
                             } else {
                                 found_bs_r = 0;
