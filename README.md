@@ -33,7 +33,7 @@ make test
 
 Commands can be sent over a TELNET connection
 
-Commands: `INDEX`, `SEARCH`, `EXIT`
+Commands: `INDEX`, `SEARCH`, `EXIT`, `VERSION`
 
 ```
 telnet localhost 5575
