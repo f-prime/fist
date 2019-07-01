@@ -1,4 +1,4 @@
-# ![img](http://fist-project.com/img/fist.ico) Fist - (F)ull-(t)ext (i)ndex (s)erver 
+# Fist - (F)ull-(t)ext (i)ndex (s)erver 
 
 [![Slack](https://img.shields.io/badge/Slack-Join%20the%20slack%20channel-BLUE.svg)](https://join.slack.com/t/fist-global/shared_invite/enQtNjcyNzY4MTUwMDg0LTRiYzM5ZWNkOTMwODYzODRjNDQzNThiYjdhNjgzZDUxZGYxODRjOTI4NTcwYmYzYmI5MTViYjFiNGFlNWEwYjY)
 [![Patreon](https://img.shields.io/badge/Patreon-Help%20fund%20this%20project-RED.svg)](https://www.patreon.com/fistproject)
