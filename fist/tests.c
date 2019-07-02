@@ -1,3 +1,4 @@
+#include "bst.h"
 #include "dstring.h"
 #include "hashmap.h"
 #include "indexer.h"
@@ -389,6 +390,44 @@ static char *test_serialize_hmap() {
     return 0;
 }
 
+
+static char *test_create_bst() {
+    struct bst_node *root = bst_create("Hello", NULL);
+    mu_assert("bst_create: Equals 'Hello'", !strcmp(root->key, "Hello"));
+    bst_free(root);
+    return 0;
+}
+
+int test_helper_handler1(hashmap *hm, int fd, dstringa params) {
+    return 0;
+}
+int test_helper_handler2(hashmap *hm, int fd, dstringa params) {
+    return 0;
+}
+int test_helper_handler3(hashmap *hm, int fd, dstringa params) {
+    return 0;
+}
+int test_helper_handler4(hashmap *hm, int fd, dstringa params) {
+    return 0;
+}
+static char *test_insert_and_search_bst(){
+    struct bst_node *root = bst_create("Hello World", NULL);
+    bst_insert(&root, "BSTn",test_helper_handler1);
+    mu_assert("bst_search: Equals 'test_helper_handler1'",
+              bst_search(root, "BSTn") == test_helper_handler1);
+    bst_insert(&root, "nodeb",test_helper_handler2);
+    mu_assert("bst_search: Equals 'test_helper_handler2'",
+              bst_search(root, "nodeb") == test_helper_handler2);
+    bst_insert(&root, "33333",test_helper_handler3);
+    mu_assert("bst_search: Equals 'test_helper_handler3'",
+              bst_search(root, "33333") == test_helper_handler3);
+    bst_insert(&root, "b4",test_helper_handler4);
+    mu_assert("bst_search: Equals 'test_helper_handler4'",
+              bst_search(root, "b4") == test_helper_handler4);
+    bst_free(root);
+    return 0;
+}
+
 static char *all_tests() {
     mu_run_test(test_serialize_hmap);
     mu_run_test(test_dappendd_dstring);
@@ -415,6 +454,8 @@ static char *all_tests() {
     mu_run_test(test_dappendc_dstring);
     mu_run_test(test_free_dstring);
     mu_run_test(test_count_dstring);
+    mu_run_test(test_create_bst);
+    mu_run_test(test_insert_and_search_bst);
     return 0;
 }
 
