@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct bst_node *bst_create(const char *key, command_handler_t value)
+struct bst_node *bst_create(const char *key, void *value)
 {
     struct bst_node *node;
 
@@ -30,7 +30,7 @@ void bst_free(struct bst_node *root) {
     free(root);
 }
 
-void bst_insert(struct bst_node **root, const char *key, command_handler_t value) {
+void bst_insert(struct bst_node **root, const char *key, void *value) {
     int cmp;
     if(!*root) {
         *root = bst_create(key, value);
@@ -46,7 +46,7 @@ void bst_insert(struct bst_node **root, const char *key, command_handler_t value
     }
 }
 
-command_handler_t bst_search(struct bst_node *root, const char *key) {
+void * bst_search(struct bst_node *root, const char *key) {
     int cmp;
     if(!root)
         return NULL;

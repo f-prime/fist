@@ -1,3 +1,4 @@
+#include "bst.h"
 #include "dstring.h"
 #include "hashmap.h"
 #include "indexer.h"
@@ -389,6 +390,35 @@ static char *test_serialize_hmap() {
     return 0;
 }
 
+
+static char *test_create_bst() {
+    struct bst_node *root = bst_create("Hello", NULL);
+    mu_assert("bst_create: Equals 'Hello'", !strcmp(root->key, "Hello"));
+    bst_free(root);
+    return 0;
+}
+
+
+static char *test_insert_and_search_bst(){
+    struct bst_node *root = bst_create("Hello World", NULL);
+    bst_insert(&root, "BSTn",NULL);
+    mu_assert("bst_search: Equals 'NULL'",
+              bst_search(root, "BSTn") == NULL);
+    int a = 2;
+    bst_insert(&root, "nodeb",&a);
+    mu_assert("bst_search: Equals address of a",
+              bst_search(root, "nodeb") == &a);
+    char * str = "abc";
+    bst_insert(&root, "33333", str);
+    mu_assert("bst_search: Equals 'abc'",
+              bst_search(root, "33333") == str);
+    bst_insert(&root, "b4",test_create_bst);
+    mu_assert("bst_search: Equals 'test_create_bst'",
+              bst_search(root, "b4") == test_create_bst);
+    bst_free(root);
+    return 0;
+}
+
 static char *all_tests() {
     mu_run_test(test_serialize_hmap);
     mu_run_test(test_dappendd_dstring);
@@ -415,6 +445,8 @@ static char *all_tests() {
     mu_run_test(test_dappendc_dstring);
     mu_run_test(test_free_dstring);
     mu_run_test(test_count_dstring);
+    mu_run_test(test_create_bst);
+    mu_run_test(test_insert_and_search_bst);
     return 0;
 }
 

@@ -31,6 +31,8 @@
 #define NOT_FOUND "[]\n"
 #define TOO_FEW_ARGUMENTS "Too few arguments\n"
 
+typedef int (*command_handler_t)(hashmap *hm, int fd, dstringa params);
+
 static const int YES = 1;
 
 static int dirty = 0;
@@ -114,7 +116,7 @@ static int process_command(hashmap *hm, int fd, dstring req) {
     commands = dsplit(trimmed, ' ');
     printf("%d '%s'\n", req.length, dtext(trimmed));
 
-    handler = bst_search(command_tree, dtext(commands.values[0]));
+    handler = (command_handler_t)bst_search(command_tree, dtext(commands.values[0]));
     if(!handler) {
         send(fd, INVALID_COMMAND, strlen(INVALID_COMMAND), 0);
         return 0;
