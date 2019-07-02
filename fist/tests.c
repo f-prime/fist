@@ -398,32 +398,23 @@ static char *test_create_bst() {
     return 0;
 }
 
-int test_helper_handler1(hashmap *hm, int fd, dstringa params) {
-    return 0;
-}
-int test_helper_handler2(hashmap *hm, int fd, dstringa params) {
-    return 0;
-}
-int test_helper_handler3(hashmap *hm, int fd, dstringa params) {
-    return 0;
-}
-int test_helper_handler4(hashmap *hm, int fd, dstringa params) {
-    return 0;
-}
+
 static char *test_insert_and_search_bst(){
     struct bst_node *root = bst_create("Hello World", NULL);
-    bst_insert(&root, "BSTn",test_helper_handler1);
-    mu_assert("bst_search: Equals 'test_helper_handler1'",
-              bst_search(root, "BSTn") == test_helper_handler1);
-    bst_insert(&root, "nodeb",test_helper_handler2);
-    mu_assert("bst_search: Equals 'test_helper_handler2'",
-              bst_search(root, "nodeb") == test_helper_handler2);
-    bst_insert(&root, "33333",test_helper_handler3);
-    mu_assert("bst_search: Equals 'test_helper_handler3'",
-              bst_search(root, "33333") == test_helper_handler3);
-    bst_insert(&root, "b4",test_helper_handler4);
-    mu_assert("bst_search: Equals 'test_helper_handler4'",
-              bst_search(root, "b4") == test_helper_handler4);
+    bst_insert(&root, "BSTn",NULL);
+    mu_assert("bst_search: Equals 'NULL'",
+              bst_search(root, "BSTn") == NULL);
+    int a = 2;
+    bst_insert(&root, "nodeb",&a);
+    mu_assert("bst_search: Equals address of a",
+              bst_search(root, "nodeb") == &a);
+    char * str = "abc";
+    bst_insert(&root, "33333", str);
+    mu_assert("bst_search: Equals 'abc'",
+              bst_search(root, "33333") == str);
+    bst_insert(&root, "b4",test_create_bst);
+    mu_assert("bst_search: Equals 'test_create_bst'",
+              bst_search(root, "b4") == test_create_bst);
     bst_free(root);
     return 0;
 }
