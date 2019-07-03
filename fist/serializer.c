@@ -4,6 +4,7 @@
 #include "stdint.h"
 #include "stdio.h"
 #include "stdlib.h"
+#include "lzf.h"
 
 void sdump(hashmap *hmap) {
     // Write size of hashmap to file. (# keys)

@@ -46,7 +46,7 @@ void bst_insert(struct bst_node **root, const char *key, void *value) {
     }
 }
 
-void * bst_search(struct bst_node *root, const char *key) {
+void *bst_search(struct bst_node *root, const char *key) {
     int cmp;
     if(!root)
         return NULL;

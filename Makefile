@@ -10,7 +10,9 @@ BIN_SOURCES := \
 	fist/indexer.c \
 	fist/serializer.c \
 	fist/server.c \
-	fist/tests.c
+	fist/tests.c \
+	fist/lzf_c.c \
+	fist/lzf_d.c
 
 BIN_HEADER_SOURCES := \
 	fist/bst.h \
@@ -20,7 +22,9 @@ BIN_HEADER_SOURCES := \
 	fist/serializer.h \
 	fist/server.h \
 	fist/version.h \
-	fist/tests.h
+	fist/tests.h \
+	fist/lzfP.h \
+	fist/lzf.h
 
 
 BIN_OBJECTS := $(BIN_SOURCES:=.o)
