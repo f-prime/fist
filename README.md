@@ -81,6 +81,10 @@ docker run -d --init --rm -p 5575:5575 -v /var/local/lib/fist fist
 
 - [fistpy](https://github.com/puria/fistpy)
 
+### Go
+
+- [go-fist](https://github.com/sonirico/go-fist)
+
 # Contributors
 
 - [@AndreRenaud](https://github.com/AndreRenaud)
