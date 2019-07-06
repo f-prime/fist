@@ -26,6 +26,9 @@ BIN_HEADER_SOURCES := \
 BIN_OBJECTS := $(BIN_SOURCES:=.o)
 BIN_DEPS := $(BIN_SOURCES:=.d)
 
+DESTDIR =
+prefix = /usr/local
+
 CC ?= gcc
 CFLAGS ?= -Wall -O2 -g
 CFLAGS += -std=c99 -D_DEFAULT_SOURCE
@@ -36,7 +39,7 @@ RM ?= rm -f
 CLANG_FORMAT ?= clang-format
 DIFF ?= diff
 
-.PHONY: all clean
+.PHONY: all clean distclean
 
 all: $(BIN)
 
@@ -64,6 +67,17 @@ format:
 .PHONY: format check_format
 
 clean:
-	$(RM) $(BIN) $(BIN_OBJECTS) $(BIN_DEPS)
+	-$(RM) $(BIN) $(BIN_OBJECTS) $(BIN_DEPS)
+
+distclean: clean
+	-$(RM) fist.db
+
+.PHONY: install uninstall
+
+install: $(BIN)
+	install -D $(BIN) $(DESTDIR)$(prefix)/bin/fist
+
+uninstall:
+	-$(RM) $(DESTDIR)$(prefix)/bin/fist
 
 -include $(BIN_DEPS)
