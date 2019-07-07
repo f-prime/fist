@@ -14,6 +14,7 @@ void sdump_compress(unsigned char *data, uint64_t original_size) {
     char *buffer;
     if((buffer = malloc(original_size * 3)) == NULL) {
         perror("Could not allocate memory durring compression. DB file will not be saved.");
+        fclose(compressed);
         return;
     }
     long size;
@@ -107,6 +108,7 @@ FILE *sload_compressed() {
         unsigned char *data;
         if((data = malloc(length)) == NULL) {
             perror("Could not allocate memory. DB file will not be loaded.");
+            fclose(db);
             return NULL;
         }
 
@@ -115,12 +117,16 @@ FILE *sload_compressed() {
         unsigned char *decompressed;
         if((decompressed = malloc(original_size)) == NULL) {
             perror("Could not allocate memory. DB file will not be loaded.");
+            free(data);
+            fclose(db);
             return NULL;
         }
 
-        int size;
-        if(!(size = lzf_decompress(data, length, decompressed, original_size))) {
+        if(!lzf_decompress(data, length, decompressed, original_size)) {
             printf("Error decompressing DB file");
+            free(data);
+            free(decompressed);
+            fclose(db);
             return NULL;
         }
 
@@ -129,10 +135,14 @@ FILE *sload_compressed() {
         FILE *tmp = tmpfile();
         if(tmp == NULL) {
             perror("Could not create tmpfile during sload_compressed. DB file will not be loaded.");
+            free(data);
+            free(decompressed);
             return NULL;
         }
         fwrite(decompressed, original_size, 1, tmp);
         rewind(tmp);
+        free(data);
+        free(decompressed);
         return tmp;
     }
 
