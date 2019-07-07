@@ -100,7 +100,7 @@ FILE *sload_compressed() {
         fseek(db, 0, SEEK_SET);
 
         // Skip first 8 bytes which are to indicate the original size of the db file.
-        
+
         length -= 8;
         fseek(db, 8, SEEK_CUR);
 
