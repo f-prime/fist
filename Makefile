@@ -14,6 +14,16 @@ BIN_SOURCES := \
 	fist/lzf_c.c \
 	fist/lzf_d.c
 
+BIN_SOURCES_CHECK := \
+	fist/bst.c \
+	fist/dstring.c \
+	fist/fist.c \
+	fist/hashmap.c \
+	fist/indexer.c \
+	fist/serializer.c \
+	fist/server.c \
+	fist/tests.c 
+
 BIN_HEADER_SOURCES := \
 	fist/bst.h \
 	fist/dstring.h \
@@ -49,7 +59,7 @@ $(BIN): $(BIN_OBJECTS)
 	$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 test: $(BIN)
-	cppcheck --quiet --std=c99 --enable=style,warning,performance,portability,unusedFunction --error-exitcode=1 $(BIN_SOURCES)
+	cppcheck --quiet --std=c99 --enable=style,warning,performance,portability,unusedFunction --error-exitcode=1 $(BIN_SOURCES_CHECK)
 	valgrind --log-file=valgrind.log --leak-check=full --error-exitcode=1  $(BIN) test
 
 .PHONY: test
