@@ -60,7 +60,7 @@ $(BIN): $(BIN_OBJECTS)
 
 test: $(BIN)
 	cppcheck --quiet --std=c99 --enable=style,warning,performance,portability,unusedFunction --error-exitcode=1 $(BIN_SOURCES_CHECK)
-	valgrind --log-file=valgrind.log --leak-check=full --error-exitcode=1  $(BIN) test
+	valgrind --suppressions=valgrind.supp --leak-check=full --error-exitcode=1  $(BIN) test
 
 .PHONY: test
 

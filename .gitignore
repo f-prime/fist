@@ -67,3 +67,4 @@ fist.db
 
 Vagrantfile
 .vagrant/
+*.log
