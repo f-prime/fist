@@ -23,6 +23,7 @@ void sdump_compress(unsigned char *data, uint64_t original_size) {
     }
     fwrite(buffer, size, 1, compressed);
     fclose(compressed);
+    free(buffer);
 }
 
 void sdump(hashmap *hmap) {
@@ -86,8 +87,8 @@ void sdump(hashmap *hmap) {
     fread(buffer, 1, len, dump);
 
     sdump_compress(buffer, len);
-
     fclose(dump);
+    free(buffer);
 }
 
 FILE *sload_compressed() {
