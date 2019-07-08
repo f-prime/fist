@@ -10,7 +10,19 @@ BIN_SOURCES := \
 	fist/indexer.c \
 	fist/serializer.c \
 	fist/server.c \
-	fist/tests.c
+	fist/tests.c \
+	fist/lzf_c.c \
+	fist/lzf_d.c
+
+BIN_SOURCES_CHECK := \
+	fist/bst.c \
+	fist/dstring.c \
+	fist/fist.c \
+	fist/hashmap.c \
+	fist/indexer.c \
+	fist/serializer.c \
+	fist/server.c \
+	fist/tests.c 
 
 BIN_HEADER_SOURCES := \
 	fist/bst.h \
@@ -20,7 +32,9 @@ BIN_HEADER_SOURCES := \
 	fist/serializer.h \
 	fist/server.h \
 	fist/version.h \
-	fist/tests.h
+	fist/tests.h \
+	fist/lzfP.h \
+	fist/lzf.h
 
 
 BIN_OBJECTS := $(BIN_SOURCES:=.o)
@@ -48,8 +62,8 @@ $(BIN): $(BIN_OBJECTS)
 	$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 test: $(BIN)
-	cppcheck --quiet --std=c99 --enable=style,warning,performance,portability,unusedFunction --error-exitcode=1 $(BIN_SOURCES)
-	valgrind --log-file=valgrind.log --leak-check=full --error-exitcode=1  $(BIN) test
+	cppcheck --quiet --std=c99 --enable=style,warning,performance,portability,unusedFunction --error-exitcode=1 $(BIN_SOURCES_CHECK)
+	valgrind --suppressions=valgrind.supp --leak-check=full --error-exitcode=1  $(BIN) test
 
 .PHONY: test
 

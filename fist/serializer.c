@@ -1,14 +1,41 @@
 #include "serializer.h"
 #include "dstring.h"
 #include "hashmap.h"
+#include "lzf.h"
 #include "stdint.h"
 #include "stdio.h"
 #include "stdlib.h"
+#include <string.h>
+
+void sdump_compress(unsigned char *data, uint64_t original_size) {
+    FILE *compressed = fopen("fist.db", "wb");
+    fwrite(&original_size, sizeof(original_size), 1, compressed);
+
+    char *buffer;
+    if((buffer = malloc(original_size * 3)) == NULL) {
+        perror("Could not allocate memory durring compression. DB file will not be saved.");
+        fclose(compressed);
+        return;
+    }
+    long size;
+    if(!(size = lzf_compress(data, original_size, buffer, original_size * 3))) {
+        printf("Compression error\n");
+    }
+    fwrite(buffer, size, 1, compressed);
+    fclose(compressed);
+    free(buffer);
+}
 
 void sdump(hashmap *hmap) {
-    // Write size of hashmap to file. (# keys)
+    // Write binary data to a temporary file, load the temp file into memory, compress it, save it
+    // to disk.
 
-    FILE *dump = fopen("fist.db", "wb");
+    FILE *dump = tmpfile();
+
+    if(dump == NULL) {
+        perror("Could not create tmpfile during sdump. DB file will not be saved.");
+        return;
+    }
 
     uint32_t num_indices = 0;
 
@@ -29,6 +56,7 @@ void sdump(hashmap *hmap) {
                 keyval object = on.maps[key];
                 uint32_t length = object.key.length;
                 // Writes key length and key name to db file
+
                 fwrite(&length, sizeof(length), 1, dump);
                 fwrite(dtext(object.key), object.key.length, 1, dump);
 
@@ -39,19 +67,95 @@ void sdump(hashmap *hmap) {
                     // Writes value to db file
                     dstring value_on = object.values.values[value];
                     uint32_t val_length = value_on.length;
+
                     fwrite(&val_length, sizeof(val_length), 1, dump);
                     fwrite(dtext(value_on), value_on.length, 1, dump);
                 }
             }
         }
     }
+
+    fseek(dump, 0, SEEK_END);
+    uint64_t len = ftell(dump);
+    fseek(dump, 0, SEEK_SET);
+    unsigned char *buffer;
+    if((buffer = malloc(len)) == NULL) {
+        perror("Could not allocate memory during sdump. DB file will not be saved.");
+        fclose(dump);
+        return;
+    }
+    fread(buffer, 1, len, dump);
+
+    sdump_compress(buffer, len);
     fclose(dump);
+    free(buffer);
+}
+
+FILE *sload_compressed() {
+    FILE *db;
+    if((db = fopen("fist.db", "rb"))) {
+        uint64_t original_size;
+        fread(&original_size, 8, 1, db);
+
+        fseek(db, 0, SEEK_END);
+        long length = ftell(db);
+        fseek(db, 0, SEEK_SET);
+
+        // Skip first 8 bytes which are to indicate the original size of the db file.
+
+        length -= 8;
+        fseek(db, 8, SEEK_CUR);
+
+        unsigned char *data;
+        if((data = malloc(length)) == NULL) {
+            perror("Could not allocate memory. DB file will not be loaded.");
+            fclose(db);
+            return NULL;
+        }
+
+        fread(data, 1, length, db);
+
+        unsigned char *decompressed;
+        if((decompressed = malloc(original_size)) == NULL) {
+            perror("Could not allocate memory. DB file will not be loaded.");
+            free(data);
+            fclose(db);
+            return NULL;
+        }
+
+        if(!lzf_decompress(data, length, decompressed, original_size)) {
+            printf("Error decompressing DB file");
+            free(data);
+            free(decompressed);
+            fclose(db);
+            return NULL;
+        }
+
+        fclose(db);
+
+        FILE *tmp = tmpfile();
+        if(tmp == NULL) {
+            perror("Could not create tmpfile during sload_compressed. DB file will not be loaded.");
+            free(data);
+            free(decompressed);
+            return NULL;
+        }
+        fwrite(decompressed, original_size, 1, tmp);
+        rewind(tmp);
+        free(data);
+        free(decompressed);
+        return tmp;
+    }
+
+    return NULL;
 }
 
 hashmap *sload() {
     hashmap *hmap = hcreate();
+
     FILE *db;
-    if((db = fopen("fist.db", "rb"))) {
+
+    if((db = sload_compressed()) != NULL) {
         uint32_t num_keys;
         fread(&num_keys, sizeof(num_keys), 1, db);
         for(int i = 0; i < num_keys; i++) {
@@ -72,7 +176,6 @@ hashmap *sload() {
                 hmap = hset(hmap, dcreate(key), dcreate(value));
             }
         }
-
         printf("Database file has been loaded. Previous state restored.\n");
         fclose(db);
     } else {

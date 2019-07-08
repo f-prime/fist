@@ -390,7 +390,6 @@ static char *test_serialize_hmap() {
     return 0;
 }
 
-
 static char *test_create_bst() {
     struct bst_node *root = bst_create("Hello", NULL);
     mu_assert("bst_create: Equals 'Hello'", !strcmp(root->key, "Hello"));
@@ -398,23 +397,18 @@ static char *test_create_bst() {
     return 0;
 }
 
-
-static char *test_insert_and_search_bst(){
+static char *test_insert_and_search_bst() {
     struct bst_node *root = bst_create("Hello World", NULL);
-    bst_insert(&root, "BSTn",NULL);
-    mu_assert("bst_search: Equals 'NULL'",
-              bst_search(root, "BSTn") == NULL);
+    bst_insert(&root, "BSTn", NULL);
+    mu_assert("bst_search: Equals 'NULL'", bst_search(root, "BSTn") == NULL);
     int a = 2;
-    bst_insert(&root, "nodeb",&a);
-    mu_assert("bst_search: Equals address of a",
-              bst_search(root, "nodeb") == &a);
-    char * str = "abc";
+    bst_insert(&root, "nodeb", &a);
+    mu_assert("bst_search: Equals address of a", bst_search(root, "nodeb") == &a);
+    char *str = "abc";
     bst_insert(&root, "33333", str);
-    mu_assert("bst_search: Equals 'abc'",
-              bst_search(root, "33333") == str);
-    bst_insert(&root, "b4",test_create_bst);
-    mu_assert("bst_search: Equals 'test_create_bst'",
-              bst_search(root, "b4") == test_create_bst);
+    mu_assert("bst_search: Equals 'abc'", bst_search(root, "33333") == str);
+    bst_insert(&root, "b4", test_create_bst);
+    mu_assert("bst_search: Equals 'test_create_bst'", bst_search(root, "b4") == test_create_bst);
     bst_free(root);
     return 0;
 }

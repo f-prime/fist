@@ -62,3 +62,9 @@ a.out
 
 scripts/
 fist.db
+.DS_STORE
+*.compressed
+
+Vagrantfile
+.vagrant/
+*.log

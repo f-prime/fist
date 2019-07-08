@@ -69,6 +69,7 @@ docker run -d --init --rm -p 5575:5575 -v /var/local/lib/fist fist
 
 - Full text indexing and searching
 - Persisting data to disk
+- Compression of index file
 - Accessible over TCP connection
 
 # Client Libraries
