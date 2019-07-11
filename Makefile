@@ -4,6 +4,7 @@ BINDIR := bin
 BIN := $(BINDIR)/fist
 BIN_SOURCES := \
 	fist/bst.c \
+	fist/config.c \
 	fist/dstring.c \
 	fist/fist.c \
 	fist/hashmap.c \

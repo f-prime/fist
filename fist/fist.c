@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "config.h"
 #include "hashmap.h"
 #include "indexer.h"
 #include "server.h"
@@ -18,5 +19,8 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    return start_server("127.0.0.1", 5575);
+    struct config config;
+    config_parse(NULL, &config);
+
+    return start_server(&config);
 }

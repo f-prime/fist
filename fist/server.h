@@ -1,6 +1,8 @@
 #ifndef H_SERVER
 #define H_SERVER
 
-int start_server(char *host, int port);
+#include "config.h"
+
+int start_server(struct config *config);
 
 #endif

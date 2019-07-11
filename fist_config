@@ -1,0 +1,5 @@
+Host 127.0.0.1
+MaxPhraseLength 10
+Port 5575
+SavePeriod 120
+SoBacklog 10
