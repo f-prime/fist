@@ -16,7 +16,9 @@ RUN set -ex; \
     groupadd --gid 1000 fist; \
     useradd --uid 1000 --gid fist --shell /bin/bash --no-create-home fist; \
     mkdir -p /var/local/lib/fist; \
-    chown fist:fist /var/local/lib/fist
+    chown fist:fist /var/local/lib/fist; \
+    mkdir -p /usr/local/etc/fist; \
+    echo "Host 0.0.0.0" >> /usr/local/etc/fist/fist_config;
 WORKDIR /var/local/lib/fist
 USER fist
 EXPOSE 5575
