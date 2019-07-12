@@ -199,7 +199,7 @@ int start_server(struct config *config) {
     // TODO: respect host parameter
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = INADDR_ANY;
-    if(!inet_aton(config->host, &server_addr.sin_addr)) {
+    if(!inet_aton(dtext(config->host), &server_addr.sin_addr)) {
         perror("inet_aton");
         rc = -1;
         goto exit;

@@ -29,8 +29,9 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    struct config config;
-    config_parse(config_file, &config);
+    struct config *config = config_parse(config_file);
 
-    return start_server(&config);
+    int rc = start_server(config);
+    config_free(config);
+    return rc;
 }
