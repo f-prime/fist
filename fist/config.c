@@ -73,5 +73,7 @@ int config_parse(const char *path, struct config *config) {
         }
     }
 
+    fclose(f);
+
     return 1;
 }
