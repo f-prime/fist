@@ -33,7 +33,7 @@ make test
 
 Commands can be sent over a TELNET connection
 
-Commands: `INDEX`, `SEARCH`, `EXIT`, `VERSION`
+Commands: `INDEX`, `SEARCH`, `EXIT`, `VERSION`, `DELETE`
 
 ```
 telnet localhost 5575
@@ -48,6 +48,10 @@ INDEX document_2 Some other text that I want to index
 Text has been indexed
 SEARCH I want to index
 ["document_1","document_2"]
+DELETE I want to index
+Key Deleted
+SEARCH I want to index
+[]
 EXIT
 Bye
 ```
