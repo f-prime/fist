@@ -66,7 +66,7 @@ static int do_delete(hashmap *hm, int fd, dstringa params) {
 }
 
 static int do_exit(hashmap *hm, int fd, dstringa params) {
-    send(fd, "Bye\n", 4, 0);
+    send(fd, BYE, strlen(BYE), 0);
     return 1;
 }
 
