@@ -253,6 +253,9 @@ static char *test_getset_hm() {
     hm = hset(hm, key2, value2);
     output = hget(hm, key2);
     mu_assert("hset+hget: Test new value same key", dequals(output.values[1], value2));
+    hm = hdel(hm, key2);
+    output = hget(hm, key2);
+    mu_assert("hdel: Test deleting value from hm", output.length == 0);
     dfree(value);
     dfree(value2);
     hfree(hm);
