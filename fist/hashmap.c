@@ -45,6 +45,7 @@ hashmap *hdel(hashmap *hm, dstring key) {
                 dfree(on.key);
             }
         }
+        free(hval->maps);
         hval->maps = new_map;
         hval->length--;
     }
