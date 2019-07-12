@@ -22,6 +22,7 @@ typedef struct dstringa
 #define dtext(_input) (!(_input).alloc_len ? (_input).static_text : (_input).text)
 
 int dequals(dstring s1, dstring s2);
+int dequalsc(dstring s1, char *s2);               // compare dstring and c string
 dstring dappendc(dstring input, char character);  // Apppend single char to string
 dstring dappend(dstring input, char *characters); // Appends a string to the end of the dstring
 dstring
