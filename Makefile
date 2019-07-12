@@ -17,6 +17,7 @@ BIN_SOURCES := \
 
 BIN_SOURCES_CHECK := \
 	fist/bst.c \
+	fist/config.c \
 	fist/dstring.c \
 	fist/fist.c \
 	fist/hashmap.c \
@@ -64,7 +65,7 @@ $(BIN): $(BIN_OBJECTS)
 
 test: $(BIN)
 	cppcheck --quiet --std=c99 --enable=style,warning,performance,portability,unusedFunction --error-exitcode=1 $(BIN_SOURCES_CHECK)
-	valgrind --suppressions=valgrind.supp --leak-check=full --error-exitcode=1  $(BIN) test
+	valgrind --suppressions=valgrind.supp --leak-check=full --error-exitcode=1  $(BIN) -t
 
 .PHONY: test
 
