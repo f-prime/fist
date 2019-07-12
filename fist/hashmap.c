@@ -31,7 +31,7 @@ hashmap *hdel(hashmap *hm, dstring key) {
             break;
         }
     }
-    
+
     if(index > -1) {
         keyval *new_map = malloc(sizeof(keyval) * (hval->length - 1));
         int new_map_index = 0;

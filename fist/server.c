@@ -32,7 +32,6 @@
 #define TOO_FEW_ARGUMENTS "Too few arguments\n"
 #define DELETED "Key Removed\n"
 
-
 typedef int (*command_handler_t)(hashmap *hm, int fd, dstringa params);
 
 static const int YES = 1;
@@ -52,14 +51,15 @@ static int do_delete(hashmap *hm, int fd, dstringa params) {
         send(fd, TOO_FEW_ARGUMENTS, strlen(TOO_FEW_ARGUMENTS), 0);
         return 0;
     }
-    
+
     dstring key = dempty();
     for(int i = 1; i < params.length; i++) {
         key = dappend(key, dtext(params.values[i]));
         key = dappendc(key, ' ');
     }
 
-    hm = hdel(hm, dtrim(key));
+    key = dtrim(key);
+    hdel(hm, key);
     dirty = 1;
     send(fd, DELETED, strlen(DELETED), 0);
     return 0;
