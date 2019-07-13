@@ -20,6 +20,39 @@ hashmap *hcreate() {
     return hm;
 }
 
+hashmap *hdel(hashmap *hm, dstring key) {
+    unsigned int hashval = hash(dtext(key));
+    hashmap *hval = &hm[hashval];
+    int index = -1;
+    for(int i = 0; i < hval->length; i++) {
+        keyval on = hval->maps[i];
+        if(dequals(on.key, key)) {
+            index = i;
+            break;
+        }
+    }
+
+    if(index > -1) {
+        keyval *new_map = malloc(sizeof(keyval) * (hval->length - 1));
+        int new_map_index = 0;
+        for(int i = 0; i < hval->length; i++) {
+            keyval on = hval->maps[i];
+            if(!dequals(on.key, key)) {
+                new_map[new_map_index] = on;
+                new_map_index++;
+            } else {
+                dfreea(on.values);
+                dfree(on.key);
+            }
+        }
+        free(hval->maps);
+        hval->maps = new_map;
+        hval->length--;
+    }
+
+    return hm;
+}
+
 void hfree(hashmap *hm) {
     // TODO: Free every key
     for(int i = 0; i < HMAP_SIZE; i++) {
