@@ -9,6 +9,10 @@ int dequals(dstring s1, dstring s2) {
     return !strcmp(dtext(s1), dtext(s2));
 }
 
+int dequalsc(dstring s1, char *s2) {
+    return !strcmp(dtext(s1), s2);
+}
+
 dstring dappendc(dstring input, char character) {
     int new_size = input.length + 2;
     char *string;

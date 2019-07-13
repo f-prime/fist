@@ -1,5 +1,6 @@
 #include "server.h"
 
+#include <arpa/inet.h>
 #include <errno.h>
 #include <netinet/in.h>
 #include <signal.h>
@@ -11,6 +12,7 @@
 #include <unistd.h>
 
 #include "bst.h"
+#include "config.h"
 #include "dstring.h"
 #include "hashmap.h"
 #include "indexer.h"
@@ -19,11 +21,7 @@
 #include "utils.h"
 #include "version.h"
 
-// TODO: extract to config file?
-#define MAX_PHRASE_LENGTH 10
 #define READ_MAX 1024
-#define SO_BACKLOG 10
-#define SAVE_SECONDS 120
 
 #define BYE "Bye\n"
 #define INDEXED "Text has been indexed\n"
@@ -32,7 +30,7 @@
 #define TOO_FEW_ARGUMENTS "Too few arguments\n"
 #define DELETED "Key Removed\n"
 
-typedef int (*command_handler_t)(hashmap *hm, int fd, dstringa params);
+typedef int (*command_handler_t)(struct config *config, hashmap *hm, int fd, dstringa params);
 
 static const int YES = 1;
 
@@ -70,14 +68,14 @@ static int do_exit(hashmap *hm, int fd, dstringa params) {
     return 1;
 }
 
-static int do_index(hashmap *hm, int fd, dstringa params) {
+static int do_index(struct config *config, hashmap *hm, int fd, dstringa params) {
     if(params.length < 3) {
         send(fd, TOO_FEW_ARGUMENTS, strlen(TOO_FEW_ARGUMENTS), 0);
         return 0;
     }
     dstring document = params.values[1];
     dstring text = djoin(drange(params, 2, params.length), ' ');
-    dstringa index = indexer(text, MAX_PHRASE_LENGTH);
+    dstringa index = indexer(text, config->max_phrase_length);
     printf("INDEX SIZE: %d\n", index.length);
     for(int i = 0; i < index.length; i++) {
         dstring on = index.values[i];
@@ -88,7 +86,7 @@ static int do_index(hashmap *hm, int fd, dstringa params) {
     return 0;
 }
 
-static int do_search(hashmap *hm, int fd, dstringa params) {
+static int do_search(struct config *config, hashmap *hm, int fd, dstringa params) {
     if(params.length < 2) {
         send(fd, TOO_FEW_ARGUMENTS, strlen(TOO_FEW_ARGUMENTS), 0);
         return 0;
@@ -115,14 +113,14 @@ static int do_search(hashmap *hm, int fd, dstringa params) {
     return 0;
 }
 
-static int do_version(hashmap *hm, int fd, dstringa params) {
+static int do_version(struct config *config, hashmap *hm, int fd, dstringa params) {
     dstring output = dcreate(VERSION);
     output = dappendc(output, '\n');
     send(fd, dtext(output), output.length, 0);
     return 0;
 }
 
-static int process_command(hashmap *hm, int fd, dstring req) {
+static int process_command(struct config *config, hashmap *hm, int fd, dstring req) {
     dstringa commands;
     dstring trimmed;
     command_handler_t handler;
@@ -137,7 +135,7 @@ static int process_command(hashmap *hm, int fd, dstring req) {
         return 0;
     }
 
-    return handler(hm, fd, commands);
+    return handler(config, hm, fd, commands);
 }
 
 static void sighandler_alarm(int signum) {
@@ -148,7 +146,7 @@ static void sighandler_int(int signum) {
     running = 0;
 }
 
-static void install_sighandlers(void) {
+static void install_sighandlers(struct config *config) {
     struct sigaction sa_int;
     sa_int.sa_flags = 0;
     sa_int.sa_handler = sighandler_int;
@@ -156,18 +154,18 @@ static void install_sighandlers(void) {
     sigaddset(&(sa_int.sa_mask), SIGINT);
     sigaction(SIGINT, &sa_int, NULL);
 
-    if(SAVE_SECONDS > 0) {
+    if(config->save_period > 0) {
         struct sigaction sa_alrm;
         sa_alrm.sa_flags = 0;
         sa_alrm.sa_handler = sighandler_alarm;
         sigemptyset(&(sa_alrm.sa_mask));
         sigaddset(&(sa_alrm.sa_mask), SIGALRM);
         sigaction(SIGALRM, &sa_alrm, NULL);
-        alarm(SAVE_SECONDS);
+        alarm(config->save_period);
     }
 }
 
-int start_server(char *host, int port) {
+int start_server(struct config *config) {
     char buf[READ_MAX];
     struct sockaddr_in client_addr;
     struct connection_info *connection_infos;
@@ -191,9 +189,10 @@ int start_server(char *host, int port) {
     dtablesize = getdtablesize();
     connection_infos = calloc(dtablesize, sizeof(struct connection_info));
 
-    install_sighandlers();
+    install_sighandlers(config);
 
-    hm = sload(); // Loads database file if it exists, otherwise returns an empty hash map
+    hm = sload(dtext(
+        config->db_path)); // Loads database file if it exists, otherwise returns an empty hash map
 
     FD_ZERO(&copy_fds);
     FD_ZERO(&master_fds);
@@ -216,20 +215,25 @@ int start_server(char *host, int port) {
     // TODO: respect host parameter
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = INADDR_ANY;
-    server_addr.sin_port = htons(port);
+    if(!inet_aton(dtext(config->host), &server_addr.sin_addr)) {
+        perror("inet_aton");
+        rc = -1;
+        goto exit;
+    }
+    server_addr.sin_port = htons(config->port);
     if(bind(server_fd, (struct sockaddr *)&server_addr, sizeof(struct sockaddr_in)) == -1) {
         perror("bind");
         rc = -1;
         goto exit;
     }
 
-    if(listen(server_fd, SO_BACKLOG) == -1) {
+    if(listen(server_fd, config->so_backlog) == -1) {
         perror("listen");
         rc = -1;
         goto exit;
     }
 
-    printf("Fist started at localhost:%d\n", port);
+    printf("Fist started at %s:%d\n", inet_ntoa(server_addr.sin_addr), config->port);
 
     FD_SET(server_fd, &master_fds);
     fd_max = server_fd;
@@ -242,9 +246,9 @@ int start_server(char *host, int port) {
             if(dirty) {
                 dirty = 0;
                 // puts("Saving db...");
-                sdump(hm);
+                sdump(dtext(config->db_path), hm);
             }
-            alarm(SAVE_SECONDS);
+            alarm(config->save_period);
         }
 
         copy_fds = master_fds;
@@ -287,7 +291,8 @@ int start_server(char *host, int port) {
                             if(on == '\r') {
                                 found_bs_r = 1;
                             } else if(on == '\n' && found_bs_r) {
-                                int should_close = process_command(hm, i, this->last_command);
+                                int should_close =
+                                    process_command(config, hm, i, this->last_command);
                                 this->last_command = dempty();
                                 if(should_close) {
                                     close(i);
@@ -304,8 +309,9 @@ int start_server(char *host, int port) {
             }
         }
     }
-    sdump(hm);
+    sdump(dtext(config->db_path), hm);
 exit:
+    hfree(hm);
     bst_free(command_tree);
     free(connection_infos);
     puts("Exiting cleanly...");

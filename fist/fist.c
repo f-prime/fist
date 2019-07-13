@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
+#include "config.h"
 #include "hashmap.h"
 #include "indexer.h"
 #include "server.h"
@@ -9,14 +11,27 @@
 #include "version.h"
 
 int main(int argc, char *argv[]) {
-    if(argc == 2) {
-        if(!strcmp(argv[1], "test")) {
+    int c;
+    const char *config_file = NULL;
+    while((c = getopt(argc, argv, "tVc:")) != -1) {
+        switch(c) {
+        case 'c':
+            config_file = optarg;
+            break;
+        case 't':
             run_tests();
-        } else if(!strcmp(argv[1], "version")) {
+            return 0;
+        case 'V':
             printf("%s\n", VERSION);
+            return 0;
+        default:
+            abort();
         }
-        return 0;
     }
 
-    return start_server("127.0.0.1", 5575);
+    struct config *config = config_parse(config_file);
+
+    int rc = start_server(config);
+    config_free(config);
+    return rc;
 }
