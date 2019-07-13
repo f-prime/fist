@@ -176,7 +176,8 @@ int start_server(struct config *config) {
 
     install_sighandlers(config);
 
-    hm = sload(); // Loads database file if it exists, otherwise returns an empty hash map
+    hm = sload(dtext(
+        config->db_path)); // Loads database file if it exists, otherwise returns an empty hash map
 
     FD_ZERO(&copy_fds);
     FD_ZERO(&master_fds);
@@ -230,7 +231,7 @@ int start_server(struct config *config) {
             if(dirty) {
                 dirty = 0;
                 // puts("Saving db...");
-                sdump(hm);
+                sdump(dtext(config->db_path), hm);
             }
             alarm(config->save_period);
         }
@@ -293,8 +294,9 @@ int start_server(struct config *config) {
             }
         }
     }
-    sdump(hm);
+    sdump(dtext(config->db_path), hm);
 exit:
+    hfree(hm);
     bst_free(command_tree);
     free(connection_infos);
     puts("Exiting cleanly...");

@@ -7,8 +7,8 @@
 #include "stdlib.h"
 #include <string.h>
 
-void sdump_compress(unsigned char *data, uint64_t original_size) {
-    FILE *compressed = fopen("fist.db", "wb");
+static void sdump_compress(const char *path, unsigned char *data, uint64_t original_size) {
+    FILE *compressed = fopen(path, "wb");
     fwrite(&original_size, sizeof(original_size), 1, compressed);
 
     char *buffer;
@@ -26,7 +26,7 @@ void sdump_compress(unsigned char *data, uint64_t original_size) {
     free(buffer);
 }
 
-void sdump(hashmap *hmap) {
+void sdump(const char *path, hashmap *hmap) {
     // Write binary data to a temporary file, load the temp file into memory, compress it, save it
     // to disk.
 
@@ -86,14 +86,14 @@ void sdump(hashmap *hmap) {
     }
     fread(buffer, 1, len, dump);
 
-    sdump_compress(buffer, len);
+    sdump_compress(path, buffer, len);
     fclose(dump);
     free(buffer);
 }
 
-FILE *sload_compressed() {
+static FILE *sload_compressed(const char *path) {
     FILE *db;
-    if((db = fopen("fist.db", "rb"))) {
+    if((db = fopen(path, "rb"))) {
         uint64_t original_size;
         fread(&original_size, 8, 1, db);
 
@@ -150,12 +150,12 @@ FILE *sload_compressed() {
     return NULL;
 }
 
-hashmap *sload() {
+hashmap *sload(const char *path) {
     hashmap *hmap = hcreate();
 
     FILE *db;
 
-    if((db = sload_compressed()) != NULL) {
+    if((db = sload_compressed(path)) != NULL) {
         uint32_t num_keys;
         fread(&num_keys, sizeof(num_keys), 1, db);
         for(int i = 0; i < num_keys; i++) {

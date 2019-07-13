@@ -4,7 +4,7 @@
 #include "dstring.h"
 #include "hashmap.h"
 
-void sdump(hashmap *hmap);
-hashmap *sload();
+void sdump(const char *path, hashmap *hmap);
+hashmap *sload(const char *path);
 
 #endif

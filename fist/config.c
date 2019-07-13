@@ -8,6 +8,7 @@
 #include "dstring.h"
 
 static void config_set_default(struct config *config) {
+    config->db_path = dcreate(CONFIG_DEFAULT_DB_PATH);
     config->host = dcreate(CONFIG_DEFAULT_HOST);
     config->max_phrase_length = CONFIG_DEFAULT_MAX_PHRASE_LEN;
     config->port = CONFIG_DEFAULT_PORT;
@@ -22,6 +23,7 @@ static void config_parse_int(const char *val, int *target) {
 }
 
 void config_free(struct config *config) {
+    dfree(config->db_path);
     dfree(config->host);
     free(config);
 }
@@ -75,7 +77,9 @@ struct config *config_parse(const char *path)
         dstring key = dcreate(tokens[0]);
         dstring value = dcreate(tokens[1]);
 
-        if(dequalsc(key, "Host")) {
+        if(dequalsc(key, "DatabaseFile")) {
+            config->db_path = dcreate(dtext(value));
+        } else if(dequalsc(key, "Host")) {
             config->host = dcreate(dtext(value));
         } else if(dequalsc(key, "MaxPhraseLength")) {
             config_parse_int(tokens[1], &config->max_phrase_length);

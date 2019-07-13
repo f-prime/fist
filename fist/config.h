@@ -3,6 +3,7 @@
 
 #include "dstring.h"
 
+#define CONFIG_DEFAULT_DB_PATH "fist.db"
 #define CONFIG_DEFAULT_HOST "127.0.0.1"
 #define CONFIG_DEFAULT_MAX_PHRASE_LEN 10
 #define CONFIG_DEFAULT_PATH "/usr/local/etc/fist/fist_config"
@@ -12,6 +13,7 @@
 
 struct config
 {
+    dstring db_path;
     dstring host;
     int max_phrase_length;
     int port;

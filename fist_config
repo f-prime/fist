@@ -1,5 +1,5 @@
-Host 127.0.0.1
-MaxPhraseLength 10
-Port 5575
-SavePeriod 120
-SoBacklog 10
+DatabaseFile Host 0.0.0.0
+Port 1234
+MaxPhraseLength 11
+SavePeriod 500
+SoBacklog 5

@@ -375,8 +375,8 @@ static char *test_serialize_hmap() {
     hm = hset(hm, key, value);
     hm = hset(hm, key, value2);
     hm = hset(hm, key2, value3);
-    sdump(hm);
-    hashmap *loaded = sload();
+    sdump("fist.db", hm);
+    hashmap *loaded = sload("fist.db");
     dstringa get_from_loaded = hget(loaded, key2);
     dstringa key1vals = hget(loaded, key);
     mu_assert("Serialized data size", get_from_loaded.length == 1);
@@ -418,6 +418,7 @@ static char *test_insert_and_search_bst() {
 static char *test_config_parse() {
     rename("fist_config", "fist_config.real");
     FILE *f = fopen("fist_config", "w+");
+    fwrite("DatabaseFile fist2.db\n", 1, 22, f);
     fwrite("Host 0.0.0.0\n", 1, 13, f);
     fwrite("Port 1234\n", 1, 10, f);
     fwrite("MaxPhraseLength 11\n", 1, 19, f);
@@ -426,6 +427,7 @@ static char *test_config_parse() {
     fclose(f);
 
     struct config *config = config_parse("./fist_config");
+    mu_assert("DatabaseFile matches", dequalsc(config->db_path, "fist2.db"));
     mu_assert("Host matches", dequalsc(config->host, "0.0.0.0"));
     mu_assert("Port matches", config->port == 1234);
     mu_assert("MaxPhraseLength matches", config->max_phrase_length == 11);
