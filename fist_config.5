@@ -1,0 +1,51 @@
+.TH FIST_CONFIG 5
+.SH NAME
+fist_config \- fist configuration file
+.SH DESCRIPTION
+The file contains one key-value per line.
+Note that all values are case sensitive.
+The possible keywords are as follows:
+.TP
+DatabaseFile
+Path to the database file.
+Can be an absolute or relative path.
+Defaults to
+.I ./fist.db
+if unspecified.
+.TP
+Host
+The address to bind on. Defaults to
+.I 127.0.0.1
+if unspecified.
+.TP
+Port
+The port to bind on. Defaults to
+.I 5575
+if unspecified.
+.TP
+MaxPhraseLength
+The maximum length of an indexed phrase. Defaults to
+.I 10
+if unspecified.
+.TP
+SavePeriod
+The number of seconds between each save, if the database is dirty.
+Defaults to
+.I 120
+if unspecified.
+.TP
+SoBacklog
+The number of sockets to leave queued up while the server is busy, e.g. busy indexing a very long document.
+Defaults to
+.I 10
+if unspecified.
+.SH EXAMPLE
+.EX
+Host 0.0.0.0
+Port 5575
+DatabaseFile /var/lib/fist/fist.db
+MaxPhraseLength 12
+SavePeriod 600
+.EE
+.SH SEE ALSO
+fist(1)
