@@ -1,0 +1,22 @@
+.TH FIST 1
+.SH NAME
+fist \- a full\-text search engine
+.SH SYNOPSIS
+.B fist
+[\fB\-c\fR \fICONFIG\fR]
+[\fB\-t\fR]
+[\fB\-V\fR]
+.SH DESCRIPTION
+.B fist
+is a fast, lightweight, full\-text search and index server.
+Fist stores all information in memory making lookups very fast while also persisting the index to disk. The index can be accessed over a TCP connection and all data returned is valid JSON.
+.SH OPTIONS
+.TP
+.BR \-c\ \fICONFIG\fR
+Load configuration from the file at \fICONFIG\fR instead of from the system config file.
+.TP
+.BR \-t
+Run automated tests and exit.
+.TP
+.BR \-V
+Print version and exit.
