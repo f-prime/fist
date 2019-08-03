@@ -92,8 +92,12 @@ distclean: clean
 
 install: $(BIN)
 	install -D $(BIN) $(DESTDIR)$(prefix)/bin/fist
+	install -D fist.1 $(DESTDIR)$(prefix)/man/man1/fist.1
+	install -D fist_config.5 $(DESTDIR)$(prefix)/man/man5/fist_config.5
 
 uninstall:
-	-$(RM) $(DESTDIR)$(prefix)/bin/fist
+	-$(RM) $(DESTDIR)$(prefix)/bin/fist \
+		$(DESTDIR)$(prefix)/man/man1/fist.1 \
+		$(DESTDIR)$(prefix)/man/man5/fist_config.5
 
 -include $(BIN_DEPS)
