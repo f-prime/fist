@@ -1,4 +1,5 @@
-DatabaseFile Host 0.0.0.0
+DatabaseFile fist.db
+Host 0.0.0.0
 Port 1234
 MaxPhraseLength 11
 SavePeriod 500
