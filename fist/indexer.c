@@ -15,7 +15,7 @@ dstringa indexer(dstring text, int max_phrase_length) {
         for(int j = i; j < i + max_phrase_length; j++) {
             for(int k = 0; k < MIN(words.length - j, max_phrase_length); k++) {
                 dstringa range = drange(words, j, j + k);
-                dstring joined = djoin(range, ' ');
+                dstring joined = dtrim(djoin(range, ' '));
                 index = dpush(index, joined);
                 dfreea(range);
                 dfree(joined);

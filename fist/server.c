@@ -29,6 +29,9 @@
 #define NOT_FOUND "[]\n"
 #define TOO_FEW_ARGUMENTS "Too few arguments\n"
 #define DELETED "Key Removed\n"
+#define NOT_IMPLEMENTED "Not Implemented\n"
+#define NO_KEYS "No keys found\n"
+#define VALUE_DROPPED "Value dropped\n"
 
 typedef int (*command_handler_t)(struct config *config, hashmap *hm, int fd, dstringa params);
 
@@ -44,7 +47,65 @@ struct connection_info
     dstring last_command;
 };
 
-static int do_delete(hashmap *hm, int fd, dstringa params) {
+static int do_keys(struct config *config, hashmap *hm, int fd, dstringa params) {
+    dstring response = dempty();
+    for(int i = 0; i < HMAP_SIZE; i++) {
+        hashmap on = hm[i];
+        if(on.length) {
+            for(int j = 0; j < on.length; j++) {
+                keyval kv = on.maps[j];
+                response = dappendc(dappendd(response, kv.key), '\n');
+            }
+        }
+    }
+    
+    if(response.length == 0) {
+        send(fd, NO_KEYS, strlen(NO_KEYS), 0);
+    } else {
+        send(fd, dtext(response), response.length, 0);
+    }
+
+    return 0;
+}
+
+static int do_drop(struct config *config, hashmap *hm, int fd, dstringa params) {
+    if(params.length < 2) {
+        send(fd, TOO_FEW_ARGUMENTS, strlen(TOO_FEW_ARGUMENTS), 0);
+        return 0;
+    }
+
+    dstring key = params.values[1];
+
+    for(int i = 0; i < HMAP_SIZE; i++) {
+        hashmap hmon = hm[i];
+        if(hmon.length > 0) {
+            for(int j = 0; j < hmon.length; j++) {
+                keyval kv = hmon.maps[j];
+                if(kv.values.length == 1) {
+                    dstring value = kv.values.values[0];
+                    if(dequals(value, key)) {
+                        hdel(hm, kv.key);
+                    }
+                } else {
+                    dstringa values = dcreatea();
+                    for(int k = 0; k < kv.values.length; k++) {
+                        dstring value = kv.values.values[k];
+                        if(!dequals(value, key)) {
+                            values = dpush(values, value);
+                        }
+                    }
+                    hmon.maps[j].values = values;
+                }
+            }
+        }
+    }
+
+    send(fd, VALUE_DROPPED, strlen(VALUE_DROPPED), 0);
+    
+    return 0;
+}
+
+static int do_delete(struct config *config, hashmap *hm, int fd, dstringa params) {
     if(params.length < 2) {
         send(fd, TOO_FEW_ARGUMENTS, strlen(TOO_FEW_ARGUMENTS), 0);
         return 0;
@@ -63,7 +124,7 @@ static int do_delete(hashmap *hm, int fd, dstringa params) {
     return 0;
 }
 
-static int do_exit(hashmap *hm, int fd, dstringa params) {
+static int do_exit(struct config *config, hashmap *hm, int fd, dstringa params) {
     send(fd, BYE, strlen(BYE), 0);
     return 1;
 }
@@ -128,7 +189,6 @@ static int process_command(struct config *config, hashmap *hm, int fd, dstring r
     trimmed = dtrim(req);
     commands = dsplit(trimmed, ' ');
     printf("%d '%s'\n", req.length, dtext(trimmed));
-
     handler = (command_handler_t)bst_search(command_tree, dtext(commands.values[0]));
     if(!handler) {
         send(fd, INVALID_COMMAND, strlen(INVALID_COMMAND), 0);
@@ -180,11 +240,13 @@ int start_server(struct config *config) {
 
     command_tree = NULL;
     // not a self balancing tree, be mindful of the order
+    bst_insert(&command_tree, "KEYS", do_keys);
     bst_insert(&command_tree, "INDEX", do_index);
     bst_insert(&command_tree, "EXIT", do_exit);
     bst_insert(&command_tree, "SEARCH", do_search);
     bst_insert(&command_tree, "DELETE", do_delete);
     bst_insert(&command_tree, "VERSION", do_version);
+    bst_insert(&command_tree, "DROP", do_drop);
 
     dtablesize = getdtablesize();
     connection_infos = calloc(dtablesize, sizeof(struct connection_info));
