@@ -32,7 +32,8 @@
 #define NOT_IMPLEMENTED "Not Implemented\n"
 #define NO_KEYS "No keys found\n"
 #define DOCUMENT_DROPPED "Document dropped\n"
-#define HELP "INDEX <document> <text> -> Maps full-text indices to a value <document>\n\
+#define HELP                                                                                       \
+    "INDEX <document> <text> -> Maps full-text indices to a value <document>\n\
 \
 SEARCH <text> -> Returns a document matching <text>\n\
 KEYS -> Returns list of keys available for searching\n\
@@ -71,7 +72,7 @@ static int do_keys(struct config *config, hashmap *hm, int fd, dstringa params) 
             }
         }
     }
-    
+
     if(response.length == 0) {
         send(fd, NO_KEYS, strlen(NO_KEYS), 0);
     } else {
@@ -114,7 +115,7 @@ static int do_drop(struct config *config, hashmap *hm, int fd, dstringa params) 
     }
 
     send(fd, DOCUMENT_DROPPED, strlen(DOCUMENT_DROPPED), 0);
-    
+
     return 0;
 }
 
