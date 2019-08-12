@@ -31,7 +31,15 @@
 #define DELETED "Key Removed\n"
 #define NOT_IMPLEMENTED "Not Implemented\n"
 #define NO_KEYS "No keys found\n"
-#define VALUE_DROPPED "Value dropped\n"
+#define DOCUMENT_DROPPED "Document dropped\n"
+#define HELP "INDEX <document> <text> -> Maps full-text indices to a value <document>\n\
+\
+SEARCH <text> -> Returns a document matching <text>\n\
+KEYS -> Returns list of keys available for searching\n\
+DELETE <key> -> Deletes a key\n\
+DROP <document> -> Removes all references to a document. If a key is mapped only to <document> then DROP will remove that key\n\
+HELP -> Shows this prompt\n\
+EXIT -> Close connection to Fist server\n"
 
 typedef int (*command_handler_t)(struct config *config, hashmap *hm, int fd, dstringa params);
 
@@ -46,6 +54,11 @@ struct connection_info
 {
     dstring last_command;
 };
+
+static int do_help(struct config *config, hashmap *hm, int fd, dstringa params) {
+    send(fd, HELP, strlen(HELP), 0);
+    return 0;
+}
 
 static int do_keys(struct config *config, hashmap *hm, int fd, dstringa params) {
     dstring response = dempty();
@@ -100,7 +113,7 @@ static int do_drop(struct config *config, hashmap *hm, int fd, dstringa params) 
         }
     }
 
-    send(fd, VALUE_DROPPED, strlen(VALUE_DROPPED), 0);
+    send(fd, DOCUMENT_DROPPED, strlen(DOCUMENT_DROPPED), 0);
     
     return 0;
 }
@@ -240,6 +253,7 @@ int start_server(struct config *config) {
 
     command_tree = NULL;
     // not a self balancing tree, be mindful of the order
+    bst_insert(&command_tree, "HELP", do_help);
     bst_insert(&command_tree, "KEYS", do_keys);
     bst_insert(&command_tree, "INDEX", do_index);
     bst_insert(&command_tree, "EXIT", do_exit);
