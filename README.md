@@ -90,6 +90,10 @@ docker run -d --init --rm -p 5575:5575 -v /var/local/lib/fist fist
 
 - [go-fist](https://github.com/sonirico/go-fist)
 
+### Ruby
+
+- [fist-rb](https://github.com/palash25/fist-rb)
+
 # Contributors
 
 - [@AndreRenaud](https://github.com/AndreRenaud)
