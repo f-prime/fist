@@ -4,8 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define HMAP_SIZE 1000081
-
 unsigned int hash(char *val) {
     unsigned long sum = 0;
     for(int x = 0; x < strlen(val); x++) {
